@@ -1,0 +1,11 @@
+body{
+    background-color: azure;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+#gitLogin{
+    align-items: center;
+    border: solid 1px black;
+    radis: 5px;
+}
