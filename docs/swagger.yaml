@@ -1,0 +1,40 @@
+info:
+  contact: {}
+paths:
+  /git/login:
+    get:
+      responses:
+        "200":
+          description: UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
+          schema:
+            type: string
+      tags:
+      - Github Oauth
+  /index:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - home page
+  /user/index:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - User Home
+  /user/userlist:
+    get:
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - UserList
+swagger: "2.0"
