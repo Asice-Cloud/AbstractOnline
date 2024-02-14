@@ -19,6 +19,44 @@ paths:
             type: string
       tags:
       - home page
+  /user/adduser:
+    get:
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Password
+        in: query
+        name: password
+        type: string
+      - description: Twice Password
+        in: query
+        name: repassword
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: Add user
+      tags:
+      - UserModule
+  /user/deluser:
+    delete:
+      parameters:
+      - description: id
+        in: query
+        name: id
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: Delete user
+      tags:
+      - UserModule
   /user/index:
     get:
       responses:
@@ -28,6 +66,29 @@ paths:
             type: string
       tags:
       - User Home
+  /user/updateuser:
+    post:
+      parameters:
+      - description: id
+        in: query
+        name: id
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: password
+        in: query
+        name: password
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: Update user
+      tags:
+      - UserModule
   /user/userlist:
     get:
       responses:
@@ -35,6 +96,7 @@ paths:
           description: code","message"}
           schema:
             type: string
+      summary: Find all user
       tags:
-      - UserList
+      - UserModule
 swagger: "2.0"

@@ -9,10 +9,11 @@ import (
 func RouterInit() {
 	router := gin.Default()
 
+	//set up CORS middleware
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:9999"}                    // 允许的来源，可以是多个域名或 "*" 表示所有来源
-	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}  // 允许的 HTTP 方法
-	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"} // 允许的 HTTP 标头
+	config.AllowOrigins = []string{"*"}                                        // allowed origin，use * represent for plural
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}  // allowed http method
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"} // allowed http header
 
 	router.Use(cors.New(config))
 	// programmatically set swagger info

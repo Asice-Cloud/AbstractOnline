@@ -1,5 +1,6 @@
 alert("Hello, World!")
 
+
 window.onload=function f(){
     var myDate=new Date()
     document.getElementById("currentTime").innerText=myDate.getDate()+"" +

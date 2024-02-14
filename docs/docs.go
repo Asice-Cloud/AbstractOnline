@@ -45,6 +45,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/adduser": {
+            "get": {
+                "tags": [
+                    "UserModule"
+                ],
+                "summary": "Add user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Twice Password",
+                        "name": "repassword",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/deluser": {
+            "delete": {
+                "tags": [
+                    "UserModule"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/index": {
             "get": {
                 "tags": [
@@ -60,11 +120,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/updateuser": {
+            "post": {
+                "tags": [
+                    "UserModule"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/userlist": {
             "get": {
                 "tags": [
-                    "UserList"
+                    "UserModule"
                 ],
+                "summary": "Find all user",
                 "responses": {
                     "200": {
                         "description": "code\",\"message\"}",
