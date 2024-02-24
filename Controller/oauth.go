@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+	"golang.org/x/time/rate"
 	"io"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 var (
 	state       = "Gauss curvature"
 	OauthConfig *oauth2.Config
+	limitCount  = rate.NewLimiter(200, 300)
 	loginPool   = make(chan struct{}, 100) // capacity of thread pool
 )
 
@@ -66,12 +68,18 @@ func generateCode() (string, error) {
 	return base64.URLEncoding.EncodeToString(randomBytes), nil
 }
 
-// Github Oauth Login
+//	 Github Oauth Login
 //
-//	@Tags			Github Oauth
-//	@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
-//	@Router			/git/login [get]
+//		@Tags			Github Oauth
+//		@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
+//		@Router			/git/login [get]
 func GitLogin(context *gin.Context) {
+	// limit the numbers of requests
+	if !limitCount.Allow() {
+		context.String(http.StatusTooManyRequests, "Too many requests.")
+		return
+	}
+
 	InitialConfig()
 
 	select {
