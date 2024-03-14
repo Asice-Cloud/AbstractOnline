@@ -1,13 +1,11 @@
 package Controller
 
 import (
-	"crypto/rand"
-	"crypto/sha256"
-	"encoding/base64"
+	"Chat/Config"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
-	"golang.org/x/time/rate"
 	"io"
 	"log"
 	"net/http"
@@ -17,15 +15,18 @@ import (
 var (
 	state       = "Gauss curvature"
 	OauthConfig *oauth2.Config
-	limitCount  = rate.NewLimiter(200, 300)
-	loginPool   = make(chan struct{}, 100) // capacity of thread pool
+
+	//instances
+	logPool = Config.NewLogPool(10)
 )
 
-type tokenResponse struct {
-	AccessToken string `json:"access_token"`
-	Scope       string `json:"scope"`
-	TokenType   string `json:"token_type"`
-}
+/*
+	type tokenResponse struct {
+		AccessToken string `json:"access_token"`
+		Scope       string `json:"scope"`
+		TokenType   string `json:"token_type"`
+	}
+*/
 type UserResponse struct {
 	Name      string `json:"name"`
 	AvatarURL string `json:"avatar_url"`
@@ -36,7 +37,7 @@ func InitialConfig() {
 		ClientID:     "Iv1.d7d4884211aa1791",
 		ClientSecret: "00b199cff9f402f4daa0b97ce698719044b71951",
 		RedirectURL:  "http://127.0.0.1:9999/hello/git/callback",
-		Scopes:       []string{"user"},
+		Scopes:       []string{"read:user"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://github.com/login/oauth/authorize",
 			TokenURL: "https://github.com/login/oauth/access_token",
@@ -45,7 +46,7 @@ func InitialConfig() {
 }
 
 // If use PKCE, need to enable them
-func generateCodeVerifier() (string, error) {
+/*func generateCodeVerifier() (string, error) {
 	randomBytes := make([]byte, 32)
 	if _, err := rand.Read(randomBytes); err != nil {
 		return "", err
@@ -66,7 +67,7 @@ func generateCode() (string, error) {
 		return "", err
 	}
 	return base64.URLEncoding.EncodeToString(randomBytes), nil
-}
+}*/
 
 //	 Github Oauth Login
 //
@@ -74,45 +75,32 @@ func generateCode() (string, error) {
 //		@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
 //		@Router			/git/login [get]
 func GitLogin(context *gin.Context) {
-	// limit the numbers of requests
-	if !limitCount.Allow() {
-		context.String(http.StatusTooManyRequests, "Too many requests.")
-		return
-	}
 
+	// init oauth config
 	InitialConfig()
 
-	select {
-	case loginPool <- struct{}{}:
-	default:
-		context.JSON(http.StatusServiceUnavailable, gin.H{"error": "Server is busy, please try again later"})
-		return
-	}
-	go func() {
-		// after handle this request, remove from pool
-		defer func() { <-loginPool }()
+	// Log the user's IP address and the login time
+	userIP := context.ClientIP()
+	logTime := time.Now()
+	//log.Printf("User IP: %s, Login Time: %s", userIP, logTime)
+	logMessage := fmt.Sprintf("User IP: %s, Login Time: %s", userIP, logTime)
+	logPool.Log(logMessage)
 
-		// Log the user's IP address and the login time
-		userIP := context.ClientIP()
-		logTime := time.Now()
-		log.Printf("User IP: %s, Login Time: %s", userIP, logTime)
+	// If use PKCE:
+	/*var PKCE bool = false
+	if PKCE == true {
+		codeVerifier, err := generateCodeVerifier()
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate code verifier"})
+			return
+		}
+		code, err := generateCode()
+		codeChallenge := generateCodeChallenge(codeVerifier)
+		context.SetCookie("code_verifier", codeVerifier, 3600, "", "", false, true)
+	}*/
 
-		// If use PKCE:
-		/*var PKCE bool = false
-		if PKCE == true {
-			codeVerifier, err := generateCodeVerifier()
-			if err != nil {
-				context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate code verifier"})
-				return
-			}
-			code, err := generateCode()
-			codeChallenge := generateCodeChallenge(codeVerifier)
-			context.SetCookie("code_verifier", codeVerifier, 3600, "", "", false, true)
-		}*/
-
-		url := OauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
-		context.Redirect(http.StatusTemporaryRedirect, url)
-	}()
+	url := OauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	context.Redirect(http.StatusTemporaryRedirect, url)
 
 }
 

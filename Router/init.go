@@ -9,7 +9,7 @@ import (
 func RouterInit() {
 	router := gin.Default()
 
-	//set up CORS middleware
+	//set up CORS Middleware
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}                                        // allowed origin，use * represent for plural
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}  // allowed http method

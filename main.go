@@ -8,5 +8,6 @@ import (
 func main() {
 	utils.InitConfig()
 	utils.InitMySQL()
+	utils.InitRedis()
 	Router.RouterInit()
 }

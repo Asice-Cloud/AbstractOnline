@@ -3,6 +3,7 @@ package utils
 import (
 	"Chat/Model"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,6 +14,7 @@ import (
 )
 
 var DB *gorm.DB
+var rdb *redis.Client
 
 func InitConfig() {
 	viper.SetConfigName("app")
@@ -46,4 +48,15 @@ func InitMySQL() {
 	// migrate schema
 	DB.AutoMigrate(&Model.UserBasic{})
 	fmt.Println("Successfully init")
+}
+
+func InitRedis() {
+	//init redis config:
+	rdb = redis.NewClient(
+		&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "", // no password set
+			DB:       0,  // use default DB
+		},
+	)
 }

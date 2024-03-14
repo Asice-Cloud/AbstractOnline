@@ -9,6 +9,13 @@ import (
 	"strconv"
 )
 
+func Login(context *gin.Context) {
+
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Login successfully",
+	})
+}
+
 // User Home Page
 // @Tags User Home
 // @Success	200	{string} welcome,user
