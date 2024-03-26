@@ -1,6 +1,7 @@
 package Router
 
 import (
+	"Chat/Middleware"
 	"Chat/docs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,12 @@ func RouterInit() {
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}  // allowed http method
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"} // allowed http header
 
+	//middleware
 	router.Use(cors.New(config))
+	router.Use(gin.Logger())
+	router.Use(Middleware.LoggingMiddleware())
+	router.Use(Middleware.LimitCount)
+
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"
 	docs.SwaggerInfo.Version = "1.0"

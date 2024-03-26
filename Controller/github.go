@@ -1,23 +1,17 @@
 package Controller
 
 import (
-	"Chat/Config"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"io"
 	"log"
 	"net/http"
-	"time"
 )
 
 var (
 	state       = "Gauss curvature"
 	OauthConfig *oauth2.Config
-
-	//instances
-	logPool = Config.NewLogPool(10)
 )
 
 /*
@@ -78,13 +72,6 @@ func GitLogin(context *gin.Context) {
 
 	// init oauth config
 	InitialConfig()
-
-	// Log the user's IP address and the login time
-	userIP := context.ClientIP()
-	logTime := time.Now()
-	//log.Printf("User IP: %s, Login Time: %s", userIP, logTime)
-	logMessage := fmt.Sprintf("User IP: %s, Login Time: %s", userIP, logTime)
-	logPool.Log(logMessage)
 
 	// If use PKCE:
 	/*var PKCE bool = false
