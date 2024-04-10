@@ -33,7 +33,7 @@ func LimitCount(context *gin.Context) (err string) {
 		validator.AddBlockIP(BlockIP)
 		mu.Unlock()
 
-		return response.CustomError{-1, "Too many requests"}.Error()
+		return response.CustomError{Code: -1, Msg: "Too many requests"}.Error()
 	}
 	return ""
 }
@@ -49,12 +49,12 @@ func BlockIPMiddleware(context *gin.Context) {
 	// Check if the IP is blocked
 	val, err := config.Rdb.Get(context, ip).Result()
 	if err != nil {
-		context.JSON(503, response.CustomError{-1, "Service Unavailable"}.Error())
+		context.JSON(503, response.CustomError{Code: -1, Msg: "Service Unavailable"}.Error())
 		context.Abort()
 		return
 	}
 	if val == "blocked" {
-		context.JSON(403, response.CustomError{-1, "Forbidden"}.Error())
+		context.JSON(403, response.CustomError{Code: -1, Msg: "Forbidden"}.Error())
 		context.Abort()
 		return
 	}

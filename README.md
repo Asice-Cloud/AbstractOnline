@@ -16,10 +16,10 @@
 ├─router           //router
 ├─response         //customize response information
 ├─service          //model operation in business service
-| └─validator      //data check
+| └─validator      //check: database fixing, redis cache
 ├─template         //html template
 ```
 
 #### what will be added:
 
-msg quene, nginx, redis, token validator, grpc 
+msg quene, nginx, redis cache, token validator, grpc 
