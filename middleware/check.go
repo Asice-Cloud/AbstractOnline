@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"Chat/config"
 	"Chat/response"
+	"Chat/service/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
@@ -16,7 +18,7 @@ var (
 	// 3. if the visit frequency is too high, block the IP
 	// 4. if the IP is blocked, return 429 status code
 	// 5. if the IP is not blocked, continue to the next middleware
-	blockIP = make(map[int]string)
+	BlockIP = make(map[int]string)
 	mu      sync.Mutex
 )
 
@@ -27,7 +29,8 @@ func LimitCount(context *gin.Context) (err string) {
 	if !limiter.Allow() {
 		// add this ip into blocked ip
 		mu.Lock()
-		blockIP[len(blockIP)] = ip
+		BlockIP[len(BlockIP)] = ip
+		validator.AddBlockIP(BlockIP)
 		mu.Unlock()
 
 		return response.CustomError{-1, "Too many requests"}.Error()
@@ -36,12 +39,26 @@ func LimitCount(context *gin.Context) (err string) {
 }
 
 func BlockIPMiddleware(context *gin.Context) {
+	ip := context.ClientIP()
 	checkResponse := LimitCount(context)
 	if checkResponse != "" {
 		context.JSON(429, checkResponse)
 		context.Abort()
 		return
 	}
+	// Check if the IP is blocked
+	val, err := config.Rdb.Get(context, ip).Result()
+	if err != nil {
+		context.JSON(503, response.CustomError{-1, "Service Unavailable"}.Error())
+		context.Abort()
+		return
+	}
+	if val == "blocked" {
+		context.JSON(403, response.CustomError{-1, "Forbidden"}.Error())
+		context.Abort()
+		return
+	}
+	context.Next()
 }
 
 // print blocked ip into a new txt file:
@@ -63,7 +80,7 @@ func PrintBlockedIP() {
 	}(file)
 
 	// write the blocked ip into the txt file
-	for _, ip := range blockIP {
+	for _, ip := range BlockIP {
 		_, err := file.WriteString(ip + "\n")
 		if err != nil {
 			return

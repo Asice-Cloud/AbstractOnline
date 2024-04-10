@@ -9,7 +9,7 @@ import (
 
 func InitRedis() {
 	// init redis config:
-	rdb = redis.NewClient(
+	Rdb = redis.NewClient(
 		&redis.Options{
 			Addr:     "localhost:6379",
 			Password: "", // no password set
@@ -19,7 +19,7 @@ func InitRedis() {
 	)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := rdb.Ping(ctx).Result()
+	_, err := Rdb.Ping(ctx).Result()
 	if err != nil {
 		panic("failed to connect redis")
 	}

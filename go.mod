@@ -20,6 +20,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/vcs v1.13.3 // indirect
+	github.com/adeven/go-wrk v0.0.0-20200418124433-63e11dd31fef // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/bytedance/sonic v1.11.3 // indirect

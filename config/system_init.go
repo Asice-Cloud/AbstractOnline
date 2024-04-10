@@ -10,7 +10,7 @@ import (
 
 var (
 	DB  *gorm.DB
-	rdb *redis.Client
+	Rdb *redis.Client
 )
 
 func InitConfig() {
