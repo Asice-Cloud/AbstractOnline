@@ -20,4 +20,6 @@
 ├─template         //html template
 ```
 
+#### what will be added:
 
+msg quene, nginx, redis, token validator, grpc 
