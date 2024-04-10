@@ -1,4 +1,4 @@
-package Controller
+package Service
 
 import (
 	"encoding/json"
@@ -68,7 +68,7 @@ func generateCode() (string, error) {
 //
 //		@Tags			GitHub Oauth
 //		@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
-//		@Router			/git/login [get]
+//		@router			/git/login [get]
 func GitLogin(context *gin.Context) {
 	// init oauth config
 	InitialConfig()

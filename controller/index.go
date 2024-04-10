@@ -1,4 +1,4 @@
-package Controller
+package Service
 
 import (
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 // @Tags			home page
 // @Success		200	{string} welcome
-// @Router			/index [get]
+// @router			/index [get]
 func Welcome(context *gin.Context) {
 	context.HTML(http.StatusOK, "index.html", gin.H{
 		"message": "Welcome",

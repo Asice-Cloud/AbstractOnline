@@ -1,27 +1,17 @@
-package Middleware
+package middleware
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
-	"Chat/Config"
+	"Chat/config"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/time/rate"
 )
 
-var logPool = Config.NewLogPool(10)
+var logPool = config.NewLogPool(10)
 
 // Limit the max count of synchronic requesets
-func LimitCount(context *gin.Context) {
-	limiter := rate.NewLimiter(200, 1)
-	if !limiter.Allow() {
-		context.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"message": "Too many requests"})
-		return
-	}
-	context.Next()
-}
 
 // record the log of request
 func LoggingMiddleware() gin.HandlerFunc {

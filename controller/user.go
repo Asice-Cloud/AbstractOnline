@@ -1,12 +1,12 @@
-package Controller
+package Service
 
 import (
 	"errors"
 	"net/http"
 	"strconv"
 
-	"Chat/Model"
-	"Chat/Service"
+	"Chat/model"
+	"Chat/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func Login(context *gin.Context) {
 // User Home Page
 // @Tags User Home
 // @Success	200	{string} welcome,user
-// @Router /user/index [get]
+// @router /user/index [get]
 func Index(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Welcome!",
@@ -31,10 +31,10 @@ func Index(context *gin.Context) {
 // @Summary Find all user
 // @Tags UserModule
 // @Success	 200	{string} json{"code","message"}
-// @Router /user/userlist [get]
+// @router /user/userlist [get]
 func GetUserList(context *gin.Context) {
-	var data []Model.UserBasic
-	data = Service.GetUserList()
+	var data []model.UserBasic
+	data = service.GetUserList()
 	if len(data) != 0 {
 		context.JSON(http.StatusOK, gin.H{
 			"message": data,
@@ -49,9 +49,9 @@ func GetUserList(context *gin.Context) {
 // @param password query string false "Password"
 // @param repassword query string false "Twice Password"
 // @Success	200	{string} json{"code","message"}
-// @Router /user/adduser [get]
+// @router /user/adduser [get]
 func CreateUser(context *gin.Context) {
-	user := Model.UserBasic{}
+	user := model.UserBasic{}
 	user.Name = context.Query("name")
 	password := context.Query("password")
 	repassword := context.Query("repassword")
@@ -62,7 +62,7 @@ func CreateUser(context *gin.Context) {
 		return
 	}
 	user.Password = password
-	rep, err := Service.CreatUser(user)
+	rep, err := service.CreatUser(user)
 	if err != nil {
 		context.JSON(-1, gin.H{
 			"message": errors.New("Failed to add user"),
@@ -79,9 +79,9 @@ func CreateUser(context *gin.Context) {
 // @Tags UserModule
 // @param id query string false "id"
 // @Success	200	{string} json{"code","message"}
-// @Router /user/deluser [delete]
+// @router /user/deluser [delete]
 func DeleteUser(context *gin.Context) {
-	var user Model.UserBasic
+	var user model.UserBasic
 	id, err := strconv.Atoi(context.Query("id"))
 	if err != nil {
 		context.JSON(-1, gin.H{
@@ -90,7 +90,7 @@ func DeleteUser(context *gin.Context) {
 		return
 	}
 	user.ID = uint(id)
-	err = Service.DeleteUser(user)
+	err = service.DeleteUser(user)
 	if err != nil {
 		context.JSON(-1, gin.H{
 			"message": errors.New("Failed to delete user"),
@@ -109,9 +109,9 @@ func DeleteUser(context *gin.Context) {
 // @param name query string false "name"
 // @param password query string false "password"
 // @Success	200	{string} json{"code","message"}
-// @Router /user/updateuser [post]
+// @router /user/updateuser [post]
 func UpdateUser(context *gin.Context) {
-	var user Model.UserBasic
+	var user model.UserBasic
 	id, err := strconv.Atoi(context.PostForm("id"))
 	if err != nil {
 		context.JSON(-1, gin.H{
@@ -122,7 +122,7 @@ func UpdateUser(context *gin.Context) {
 	user.ID = uint(id)
 	user.Name = context.PostForm("name")
 	user.Password = context.PostForm("password")
-	rep, err := Service.UpdateUser(user)
+	rep, err := service.UpdateUser(user)
 	if err != nil {
 		context.JSON(-1, gin.H{
 			"message": errors.New("Failed to update user information"),

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Chat/Router"
+	"Chat/router"
 	"Chat/utils"
 )
 
@@ -9,5 +9,5 @@ func main() {
 	utils.InitConfig()
 	utils.InitMySQL()
 	utils.InitRedis()
-	Router.RouterInit()
+	router.RouterInit()
 }
