@@ -31,7 +31,7 @@ func InitialConfig() {
 	OauthConfig = &oauth2.Config{
 		ClientID:     "Iv1.d7d4884211aa1791",
 		ClientSecret: "00b199cff9f402f4daa0b97ce698719044b71951",
-		RedirectURL:  "http://127.0.0.1:9999/hello/git/callback",
+		RedirectURL:  "http://127.0.0.1:9999/git/callback",
 		Scopes:       []string{"read:user"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://github.com/login/oauth/authorize",

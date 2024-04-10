@@ -2,6 +2,7 @@ package router
 
 import (
 	"Chat/controller"
+	"Chat/middleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -13,6 +14,7 @@ func Routers(router *gin.Engine) {
 	router.GET("/index", Service.Welcome)
 
 	userRouter := router.Group("/user")
+	userRouter.Use(middleware.BlockIPMiddleware)
 	{
 		userRouter.GET("/login", Service.Login)
 		userRouter.GET("/index", Service.Index)

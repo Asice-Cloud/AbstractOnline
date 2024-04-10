@@ -14,7 +14,6 @@ func RouterInit() {
 	router.Use(cors.New(middleware.RouterInit()))
 	router.Use(gin.Logger())
 	router.Use(middleware.LoggingMiddleware())
-	router.Use(middleware.LimitCount)
 
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"
