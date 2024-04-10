@@ -8,9 +8,9 @@ import (
 
 // index page
 
-// @Tags			home page
-// @Success		200	{string} welcome
-// @router			/index [get]
+// @Tags	home page
+// @Success	200	{string} welcome
+// @router	/index [get]
 func Welcome(context *gin.Context) {
 	context.HTML(http.StatusOK, "index.html", gin.H{
 		"message": "Welcome",

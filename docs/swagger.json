@@ -7,7 +7,7 @@
         "/git/login": {
             "get": {
                 "tags": [
-                    "Github Oauth"
+                    "GitHub Oauth"
                 ],
                 "responses": {
                     "200": {
@@ -21,9 +21,6 @@
         },
         "/index": {
             "get": {
-                "tags": [
-                    "home page"
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",

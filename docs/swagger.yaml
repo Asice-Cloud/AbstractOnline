@@ -9,7 +9,7 @@ paths:
           schema:
             type: string
       tags:
-      - Github Oauth
+      - GitHub Oauth
   /index:
     get:
       responses:
@@ -17,8 +17,6 @@ paths:
           description: OK
           schema:
             type: string
-      tags:
-      - home page
   /user/adduser:
     get:
       parameters:

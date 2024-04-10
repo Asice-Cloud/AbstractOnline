@@ -4,15 +4,13 @@ import (
 	"Chat/config"
 	"Chat/response"
 	"Chat/service/validator"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
-	"os"
 	"sync"
 )
 
 var (
-	// blocked IP:
+	// BlockIP blocked IP:
 	// 1. use redis to store the IP
 	// 2. use the IP as the key, and the visit frequency as the value
 	// 3. if the visit frequency is too high, block the IP
@@ -22,7 +20,7 @@ var (
 	mu      sync.Mutex
 )
 
-// check the visit frequency, if it is too frequent, blocking the IP
+// LimitCount check the visit frequency, if it is too frequent, blocking the IP
 func LimitCount(context *gin.Context) (err string) {
 	ip := context.ClientIP()
 	limiter := rate.NewLimiter(200, 1)
@@ -30,14 +28,17 @@ func LimitCount(context *gin.Context) (err string) {
 		// add this ip into blocked ip
 		mu.Lock()
 		BlockIP[len(BlockIP)] = ip
-		validator.AddBlockIP(BlockIP)
+		err := validator.AddBlockIP(BlockIP)
+		if err != nil {
+			return ""
+		}
 		mu.Unlock()
-
 		return response.CustomError{Code: -1, Msg: "Too many requests"}.Error()
 	}
 	return ""
 }
 
+// BlockIPMiddleware the middleware to block malicious ip
 func BlockIPMiddleware(context *gin.Context) {
 	ip := context.ClientIP()
 	checkResponse := LimitCount(context)
@@ -59,31 +60,4 @@ func BlockIPMiddleware(context *gin.Context) {
 		return
 	}
 	context.Next()
-}
-
-// print blocked ip into a new txt file:
-// 1. create a new txt file
-// 2. write the blocked ip into the txt file
-func PrintBlockedIP() {
-	// create a new txt file
-	file, err := os.Create("blockedIP.txt")
-	if err != nil {
-		fmt.Println("Create file failed!")
-		return
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			fmt.Println("Close file failed!")
-			return
-		}
-	}(file)
-
-	// write the blocked ip into the txt file
-	for _, ip := range BlockIP {
-		_, err := file.WriteString(ip + "\n")
-		if err != nil {
-			return
-		}
-	}
 }

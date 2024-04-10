@@ -16,7 +16,7 @@ type LogPool struct {
 	wg    sync.WaitGroup
 }
 
-// Implement the methods of LogPool
+// NewLogPool Implement the methods of LogPool
 func NewLogPool(workCount int) *LogPool {
 	pool := &LogPool{
 		tasks: make(chan LogTask),

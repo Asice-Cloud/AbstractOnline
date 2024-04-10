@@ -18,7 +18,7 @@ const docTemplate = `{
         "/git/login": {
             "get": {
                 "tags": [
-                    "Github Oauth"
+                    "GitHub Oauth"
                 ],
                 "responses": {
                     "200": {
@@ -32,9 +32,6 @@ const docTemplate = `{
         },
         "/index": {
             "get": {
-                "tags": [
-                    "home page"
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
