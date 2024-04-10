@@ -1,21 +1,21 @@
 package service
 
 import (
+	"Chat/config"
 	"Chat/model"
-	"Chat/utils"
 	"gorm.io/gorm/clause"
 )
 
 // Search all user
 func GetUserList() []model.UserBasic {
 	var data []model.UserBasic
-	utils.DB.Model(&model.UserBasic{}).Find(&data)
+	config.DB.Model(&model.UserBasic{}).Find(&data)
 	return data
 }
 
 // Add new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
-	tx := utils.DB.Begin()
+	tx := config.DB.Begin()
 	var exist_user model.UserBasic
 	result := tx.Model(&model.UserBasic{}).Where("name=?", user.Name).First(&exist_user)
 	if result.Error == nil {
@@ -38,7 +38,7 @@ func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 // Delete existing user
 func DeleteUser(user model.UserBasic) error {
 	var existingUser model.UserBasic
-	tx := utils.DB.Begin()
+	tx := config.DB.Begin()
 	result := tx.Model(&model.UserBasic{}).Where("id = ?", user.ID).First(&existingUser)
 	if result.Error != nil {
 		return result.Error
@@ -52,7 +52,7 @@ func DeleteUser(user model.UserBasic) error {
 
 // Update user
 func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
-	tx := utils.DB.Begin()
+	tx := config.DB.Begin()
 	var exist model.UserBasic
 	result := tx.Model(&model.UserBasic{}).Where("id=?", user.ID).First(&exist)
 	if result.Error != nil {

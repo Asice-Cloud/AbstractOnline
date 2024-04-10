@@ -1,13 +1,13 @@
 package main
 
 import (
+	"Chat/config"
 	"Chat/router"
-	"Chat/utils"
 )
 
 func main() {
-	utils.InitConfig()
-	utils.InitMySQL()
-	utils.InitRedis()
+	config.InitConfig()
+	config.InitMySQL()
+	config.InitRedis()
 	router.RouterInit()
 }
