@@ -12,11 +12,12 @@
 ├─controller       //http operation in business logic 
 ├─docs             //swagger docs    
 ├─middleware       //middleware
+|└─auth            //verify ip, login ...
 ├─model            //database
 ├─router           //router
 ├─response         //customize response information
 ├─service          //model operation in business service
-| └─validator      //check: database fixing, redis cache
+| └─validator      //check for data
 ├─template         //html template
 ```
 
