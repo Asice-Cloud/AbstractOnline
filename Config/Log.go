@@ -5,8 +5,7 @@ import (
 	"sync"
 )
 
-//create thread pool for recording log
-
+// create thread pool for recording log
 type LogTask struct {
 	message string
 	done    chan bool

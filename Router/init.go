@@ -10,13 +10,13 @@ import (
 func RouterInit() {
 	router := gin.Default()
 
-	//set up CORS Middleware
+	// set up CORS Middleware
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}                                        // allowed origin，use * represent for plural
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}  // allowed http method
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"} // allowed http header
 
-	//middleware
+	// middleware
 	router.Use(cors.New(config))
 	router.Use(gin.Logger())
 	router.Use(Middleware.LoggingMiddleware())

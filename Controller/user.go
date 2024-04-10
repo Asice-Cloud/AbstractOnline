@@ -1,16 +1,17 @@
 package Controller
 
 import (
-	"Chat/Model"
-	"Chat/Service"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"Chat/Model"
+	"Chat/Service"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Login(context *gin.Context) {
-
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Login successfully",
 	})

@@ -2,11 +2,12 @@ package Controller
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/oauth2"
 )
 
 var (
@@ -63,13 +64,12 @@ func generateCode() (string, error) {
 	return base64.URLEncoding.EncodeToString(randomBytes), nil
 }*/
 
-//	 Github Oauth Login
+//	 GitHub Oauth Login
 //
-//		@Tags			Github Oauth
+//		@Tags			GitHub Oauth
 //		@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
 //		@Router			/git/login [get]
 func GitLogin(context *gin.Context) {
-
 	// init oauth config
 	InitialConfig()
 
@@ -88,7 +88,6 @@ func GitLogin(context *gin.Context) {
 
 	url := OauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	context.Redirect(http.StatusTemporaryRedirect, url)
-
 }
 
 func GitCallBack(context *gin.Context) {
@@ -153,6 +152,7 @@ func GitCallBack(context *gin.Context) {
 	}
 	GetUserDetails(context, token.AccessToken)
 }
+
 func GetUserDetails(context *gin.Context, token string) {
 	// Create a new request
 	req, err := http.NewRequest("GET", "https://api.github.com/user", nil)

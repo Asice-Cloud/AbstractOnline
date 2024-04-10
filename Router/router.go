@@ -8,7 +8,6 @@ import (
 )
 
 func Routers(router *gin.Engine) {
-
 	// use ginSwagger Middleware to serve the API docs
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/index", Controller.Welcome)

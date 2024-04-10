@@ -1,19 +1,21 @@
 package Middleware
 
 import (
-	"Chat/Config"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/time/rate"
 	"net/http"
 	"time"
+
+	"Chat/Config"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/time/rate"
 )
 
 var logPool = Config.NewLogPool(10)
 
 // Limit the max count of synchronic requesets
 func LimitCount(context *gin.Context) {
-	var limiter = rate.NewLimiter(200, 1)
+	limiter := rate.NewLimiter(200, 1)
 	if !limiter.Allow() {
 		context.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"message": "Too many requests"})
 		return
