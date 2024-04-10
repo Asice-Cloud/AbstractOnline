@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"Chat/config"
+	"Chat/middleware/auth"
 	"Chat/response"
-	"Chat/service/validator"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 	"sync"
@@ -28,7 +28,7 @@ func LimitCount(context *gin.Context) (err string) {
 		// add this ip into blocked ip
 		mu.Lock()
 		BlockIP[len(BlockIP)] = ip
-		err := validator.AddBlockIP(BlockIP)
+		err := auth.AddBlockIP(BlockIP)
 		if err != nil {
 			return ""
 		}

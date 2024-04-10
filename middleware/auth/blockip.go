@@ -1,4 +1,4 @@
-package validator
+package auth
 
 import (
 	"Chat/config"
