@@ -1,4 +1,4 @@
-package config
+package algorithm
 
 import (
 	"log"

@@ -12,7 +12,7 @@ import (
 var (
 	// BlockIP blocked IP:
 	// 1. use redis to store the IP
-	// 2. use the IP as the key, and the visit frequency as the value
+	// 2. use the IP as the key, and the attribute as value
 	// 3. if the visit frequency is too high, block the IP
 	// 4. if the IP is blocked, return 429 status code
 	// 5. if the IP is not blocked, continue to the next middleware
@@ -20,7 +20,7 @@ var (
 	mu      sync.Mutex
 )
 
-// LimitCount check the visit frequency, if it is too frequent, blocking the IP
+// LimitCount check the visit frequency if it is too frequent, blocking the IP
 func LimitCount(context *gin.Context) (err string) {
 	ip := context.ClientIP()
 	limiter := rate.NewLimiter(200, 1)
