@@ -1,4 +1,4 @@
-## Personal exercise project, a online chat system by Go
+## Personal exercise project, an online chat system by Go
 
 
 
