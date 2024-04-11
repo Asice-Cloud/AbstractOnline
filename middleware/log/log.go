@@ -1,14 +1,14 @@
-package middleware
+package log
 
 import (
-	"Chat/config/algorithm"
+	"Chat/logger"
 	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-var logPool = algorithm.NewLogPool(10)
+var logPool = logger.NewLogPool(10)
 
 // Limit the max count of synchronic requesets
 

@@ -1,3 +1,3 @@
-package algorithm
+package pkg
 
 // snowflake algorithm

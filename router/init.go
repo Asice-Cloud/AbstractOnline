@@ -3,6 +3,7 @@ package router
 import (
 	"Chat/docs"
 	"Chat/middleware"
+	"Chat/middleware/log"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ func RouterInit() {
 	// middleware
 	router.Use(cors.New(middleware.RouterInit()))
 	router.Use(gin.Logger())
-	router.Use(middleware.LoggingMiddleware())
+	router.Use(log.LoggingMiddleware())
 
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"
@@ -23,7 +24,7 @@ func RouterInit() {
 	docs.SwaggerInfo.BasePath = ""
 
 	router.LoadHTMLGlob("template/*")
-	router.Static("/assert", "./assert")
+	router.Static("/static", "./static")
 
 	Routers(router)
 	router.Run(":9999")
