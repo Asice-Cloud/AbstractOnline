@@ -1,4 +1,4 @@
-## Personal  exercise project,used for be mass press test
+## Personal exercise project, a online chat system by Go
 
 
 
