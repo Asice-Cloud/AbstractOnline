@@ -1,4 +1,4 @@
-package Service
+package controller
 
 import (
 	"errors"

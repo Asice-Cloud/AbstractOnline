@@ -11,22 +11,22 @@ import (
 func Routers(router *gin.Engine) {
 	// use ginSwagger middleware to serve the API docs
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/index", Service.Welcome)
+	router.GET("/index", controller.Welcome)
 
 	userRouter := router.Group("/user")
 	userRouter.Use(middleware.BlockIPMiddleware)
 	{
-		userRouter.GET("/login", Service.Login)
-		userRouter.GET("/index", Service.Index)
-		userRouter.GET("/userlist", Service.GetUserList)
-		userRouter.GET("/adduser", Service.CreateUser)
-		userRouter.DELETE("/deluser", Service.DeleteUser)
-		userRouter.POST("/updateuser", Service.UpdateUser)
+		userRouter.GET("/login", controller.Login)
+		userRouter.GET("/index", controller.Index)
+		userRouter.GET("/userlist", controller.GetUserList)
+		userRouter.GET("/adduser", controller.CreateUser)
+		userRouter.DELETE("/deluser", controller.DeleteUser)
+		userRouter.POST("/updateuser", controller.UpdateUser)
 	}
 
 	gitRouter := router.Group("/git")
 	{
-		gitRouter.GET("/login", Service.GitLogin)
-		gitRouter.GET("/callback", Service.GitCallBack)
+		gitRouter.GET("/login", controller.GitLogin)
+		gitRouter.GET("/callback", controller.GitCallBack)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"Chat/middleware/auth"
 	"Chat/response"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/time/rate"
 	"sync"
 )
@@ -49,13 +50,18 @@ func BlockIPMiddleware(context *gin.Context) {
 	}
 	// Check if the IP is blocked
 	val, err := config.Rdb.Get(context, ip).Result()
-	if err != nil {
-		context.JSON(503, response.CustomError{Code: -1, Msg: "Service Unavailable"}.Error())
+	if err == redis.Nil {
+		// Key does not exist, continue to the next middleware
+		context.Next()
+		return
+	} else if err != nil {
+		// An actual error occurred, return a 503 error
+		context.JSON(503, response.CustomError{-1, "Service Unavailable"}.Error())
 		context.Abort()
 		return
 	}
 	if val == "blocked" {
-		context.JSON(403, response.CustomError{Code: -1, Msg: "Forbidden"}.Error())
+		context.JSON(403, response.CustomError{-1, "Forbidden"}.Error())
 		context.Abort()
 		return
 	}
