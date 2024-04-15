@@ -13,14 +13,14 @@ func GetUserList() []model.UserBasic {
 	return data
 }
 
-// Add new user
+// Create new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
 	var exist_user model.UserBasic
-	result := tx.Model(&model.UserBasic{}).Where("name=?", user.Name).First(&exist_user)
+	result := tx.Where("name=?", user.Name).First(&exist_user)
 	if result.Error == nil {
 		tx.Rollback()
-		return "Star already exist", nil
+		return -1, nil
 	}
 	data := &model.UserBasic{
 		Name:     user.Name,
@@ -39,14 +39,15 @@ func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 func DeleteUser(user model.UserBasic) error {
 	var existingUser model.UserBasic
 	tx := config.DB.Begin()
-	result := tx.Model(&model.UserBasic{}).Where("id = ?", user.ID).First(&existingUser)
+	result := tx.Where("id = ?", user.ID).First(&existingUser)
 	if result.Error != nil {
 		return result.Error
 	}
-	result = tx.Model(&model.UserBasic{}).Where("id=?", existingUser.ID).Unscoped().Delete(&existingUser)
+	result = tx.Delete(&existingUser) // Change this line
 	if result.Error != nil {
 		return result.Error
 	}
+	tx.Commit()
 	return nil
 }
 
@@ -54,12 +55,19 @@ func DeleteUser(user model.UserBasic) error {
 func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
 	var exist model.UserBasic
-	result := tx.Model(&model.UserBasic{}).Where("id=?", user.ID).First(&exist)
+	result := tx.Where("id=?", user.ID).First(&exist)
 	if result.Error != nil {
 		tx.Rollback()
-		return
+		return -1, result.Error
 	}
-	tx.Model(&exist).Updates(model.UserBasic{Name: user.Name, Password: user.Password})
+	result = tx.Model(&exist).Updates(map[string]interface{}{
+		"Name":     user.Name,
+		"Password": user.Password,
+	})
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
+	}
 	tx.Commit()
 	return exist.ID, nil
 }

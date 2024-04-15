@@ -32,6 +32,9 @@ const docTemplate = `{
         },
         "/index": {
             "get": {
+                "tags": [
+                    "home page"
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -119,6 +122,9 @@ const docTemplate = `{
         },
         "/user/updateuser": {
             "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
                 "tags": [
                     "UserModule"
                 ],
@@ -128,19 +134,19 @@ const docTemplate = `{
                         "type": "string",
                         "description": "id",
                         "name": "id",
-                        "in": "query"
+                        "in": "formData"
                     },
                     {
                         "type": "string",
                         "description": "name",
                         "name": "name",
-                        "in": "query"
+                        "in": "formData"
                     },
                     {
                         "type": "string",
                         "description": "password",
                         "name": "password",
-                        "in": "query"
+                        "in": "formData"
                     }
                 ],
                 "responses": {

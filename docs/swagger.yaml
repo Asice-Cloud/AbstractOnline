@@ -17,6 +17,8 @@ paths:
           description: OK
           schema:
             type: string
+      tags:
+      - home page
   /user/adduser:
     get:
       parameters:
@@ -66,17 +68,19 @@ paths:
       - User Home
   /user/updateuser:
     post:
+      consumes:
+      - application/x-www-form-urlencoded
       parameters:
       - description: id
-        in: query
+        in: formData
         name: id
         type: string
       - description: name
-        in: query
+        in: formData
         name: name
         type: string
       - description: password
-        in: query
+        in: formData
         name: password
         type: string
       responses:

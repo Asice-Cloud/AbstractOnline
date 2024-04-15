@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,6 +17,7 @@ func Login(context *gin.Context) {
 	})
 }
 
+// Index
 // User Home Page
 // @Tags User Home
 // @Success	200	{string} welcome,user
@@ -57,20 +58,25 @@ func CreateUser(context *gin.Context) {
 	repassword := context.Query("repassword")
 	if password != repassword {
 		context.JSON(-1, gin.H{
-			"message": errors.New("twice password is not matched"),
+			"message": "twice password is not matched",
 		})
 		return
 	}
 	user.Password = password
 	rep, err := service.CreatUser(user)
+	if rep == -1 {
+		context.JSON(-1, gin.H{
+			"message": "User already exist",
+		})
+	}
 	if err != nil {
 		context.JSON(-1, gin.H{
-			"message": errors.New("Failed to add user"),
+			"message": "Failed to add user",
 		})
 		return
 	}
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Add user: " + rep.(string) + " successfully",
+		"message": fmt.Sprintf("Successfully create user: %d", rep),
 	})
 }
 
@@ -85,7 +91,7 @@ func DeleteUser(context *gin.Context) {
 	id, err := strconv.Atoi(context.Query("id"))
 	if err != nil {
 		context.JSON(-1, gin.H{
-			"message": errors.New("Please Input a valid number"),
+			"message": "Please Input a valid number",
 		})
 		return
 	}
@@ -93,7 +99,7 @@ func DeleteUser(context *gin.Context) {
 	err = service.DeleteUser(user)
 	if err != nil {
 		context.JSON(-1, gin.H{
-			"message": errors.New("Failed to delete user"),
+			"message": "Failed to delete user",
 		})
 		return
 	}
@@ -105,31 +111,31 @@ func DeleteUser(context *gin.Context) {
 // UpdateUser
 // @Summary	Update user
 // @Tags UserModule
-// @param id query string false "id"
-// @param name query string false "name"
-// @param password query string false "password"
+// @Accept x-www-form-urlencoded
+// @Param id formData string false "id"
+// @Param name formData string false "name"
+// @Param password formData string false "password"
 // @Success	200	{string} json{"code","message"}
 // @router /user/updateuser [post]
 func UpdateUser(context *gin.Context) {
 	var user model.UserBasic
-	id, err := strconv.Atoi(context.PostForm("id"))
-	if err != nil {
-		context.JSON(-1, gin.H{
-			"message": errors.New("Please input valid number"),
-		})
-		return
-	}
+	id, _ := strconv.Atoi(context.PostForm("id"))
 	user.ID = uint(id)
 	user.Name = context.PostForm("name")
 	user.Password = context.PostForm("password")
 	rep, err := service.UpdateUser(user)
 	if err != nil {
 		context.JSON(-1, gin.H{
-			"message": errors.New("Failed to update user information"),
+			"message": "Failed to update user information",
 		})
 		return
 	}
+	if rep == -1 {
+		context.JSON(-1, gin.H{
+			"message": "User not exists",
+		})
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Successfully update user: " + rep.(string),
+		"message": fmt.Sprintf("Successfully update user: %d", rep),
 	})
 }
