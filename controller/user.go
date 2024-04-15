@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/asaskevich/govalidator"
 	"net/http"
 	"strconv"
 
@@ -115,6 +116,8 @@ func DeleteUser(context *gin.Context) {
 // @Param id formData string false "id"
 // @Param name formData string false "name"
 // @Param password formData string false "password"
+// @Param phone formData string false "phone"
+// @Param email formData string false "email"
 // @Success	200	{string} json{"code","message"}
 // @router /user/updateuser [post]
 func UpdateUser(context *gin.Context) {
@@ -123,19 +126,32 @@ func UpdateUser(context *gin.Context) {
 	user.ID = uint(id)
 	user.Name = context.PostForm("name")
 	user.Password = context.PostForm("password")
-	rep, err := service.UpdateUser(user)
+	user.Phone = context.PostForm("phone")
+	user.Email = context.PostForm("email")
+
+	_, err := govalidator.ValidateStruct(user)
 	if err != nil {
+		fmt.Println(err)
 		context.JSON(-1, gin.H{
-			"message": "Failed to update user information",
+			"message": "parameters not matched",
 		})
 		return
-	}
-	if rep == -1 {
-		context.JSON(-1, gin.H{
-			"message": "User not exists",
+	} else {
+		rep, err := service.UpdateUser(user)
+		if err != nil {
+			context.JSON(-1, gin.H{
+				"message": "Failed to update user information",
+			})
+			return
+		}
+		if rep == -1 {
+			context.JSON(-1, gin.H{
+				"message": "User not exists",
+			})
+		}
+		context.JSON(http.StatusOK, gin.H{
+			"message": fmt.Sprintf("Successfully update user: %d", rep),
 		})
 	}
-	context.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Successfully update user: %d", rep),
-	})
+
 }

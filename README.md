@@ -18,7 +18,6 @@
 |-response         //customize response information
 |-router           //router
 |-service          //model operation in business service
-|  └─validator     //check for data
 |-static           //webpage front-end 
 |  └─assert        //assert of front-end
 |  └─css           //css

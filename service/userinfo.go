@@ -3,6 +3,7 @@ package service
 import (
 	"Chat/config"
 	"Chat/model"
+
 	"gorm.io/gorm/clause"
 )
 
@@ -60,9 +61,11 @@ func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
 		tx.Rollback()
 		return -1, result.Error
 	}
-	result = tx.Model(&exist).Updates(map[string]interface{}{
-		"Name":     user.Name,
-		"Password": user.Password,
+	result = tx.Model(&exist).Updates(&model.UserBasic{
+		Name:     user.Name,
+		Password: user.Password,
+		Phone:    user.Phone,
+		Email:    user.Email,
 	})
 	if result.Error != nil {
 		tx.Rollback()
