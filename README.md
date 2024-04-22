@@ -5,11 +5,12 @@
 ```
 
 |-config           //project config   
-|-controller       //http operation in business logic 
+|-controller       //http operation in business logic,user and admin module
 |-docs             //swagger docs
 |-logger           //record log
 |-middleware       //middleware
 |  └─auth          //verify ip, login ...
+|  └─blockIP       //ip blocked operation
 |  └─log           //middleware of logger
 |-model            //database
 |-pkg              //algorithm for service
@@ -25,7 +26,7 @@
 
 #### what will be added:
 
-msg quene, nginx, redis cache, token validator, grpc
+msg quene, nginx, redis cache, token validator, (distributed system frame?)
 
 #### other more:
 

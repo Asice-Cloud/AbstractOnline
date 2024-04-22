@@ -1,24 +1,11 @@
-package middleware
+package blockIP
 
 import (
 	"Chat/config"
-	"Chat/middleware/auth"
 	"Chat/response"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/time/rate"
-	"sync"
-)
-
-var (
-	// BlockIP blocked IP:
-	// 1. use redis to store the IP
-	// 2. use the IP as the key, and the attribute as value
-	// 3. if the visit frequency is too high, block the IP
-	// 4. if the IP is blocked, return 429 status code
-	// 5. if the IP is not blocked, continue to the next middleware
-	BlockIP = make(map[int]string)
-	mu      sync.Mutex
 )
 
 // LimitCount check the visit frequency if it is too frequent, blocking the IP
@@ -28,8 +15,7 @@ func LimitCount(context *gin.Context) (err string) {
 	if !limiter.Allow() {
 		// add this ip into blocked ip
 		mu.Lock()
-		BlockIP[len(BlockIP)] = ip
-		err := auth.AddBlockIP(BlockIP)
+		err := AddBlockIP(ip)
 		if err != nil {
 			return ""
 		}

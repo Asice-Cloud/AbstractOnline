@@ -10,4 +10,5 @@ func main() {
 	config.InitMySQL()
 	config.InitRedis()
 	router.RouterInit()
+
 }
