@@ -1,6 +1,24 @@
 info:
   contact: {}
 paths:
+  /admin/deleteblockip:
+    delete:
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - Admin
+  /admin/retrievalblockip:
+    get:
+      responses:
+        "200":
+          description: code","blockip"}
+          schema:
+            type: string
+      tags:
+      - Admin
   /git/login:
     get:
       responses:

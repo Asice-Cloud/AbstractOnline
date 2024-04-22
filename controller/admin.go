@@ -13,8 +13,8 @@ var (
 // BlockIPRetrieval
 // Admin Block IP Retrieval
 // @Tags Admin
-// @Success	200	json{"code","blockip"}
-// @router /admin/retrievalblockip[get]
+// @Success	200 {string} json{"code","blockip"}
+// @router /admin/retrievalblockip [get]
 func BlockIPRetrieval(ctx *gin.Context) {
 	// get the blocked IP
 	blockIp, err := RetrievalBlockIP(ctx)
@@ -33,8 +33,8 @@ func BlockIPRetrieval(ctx *gin.Context) {
 // BlockIPRemove
 // Admin Block IP Remove
 // @Tags Admin
-// @Success	200	json{"code","message"}
-// @router /admin/deleteblockip[delete]
+// @Success	200 {string} json{"code","message"}
+// @router /admin/deleteblockip [delete]
 func BlockIPRemove(ctx *gin.Context) {
 	ip := ctx.Query("ip")
 	err := RemoveBlockIP(ctx, ip)
