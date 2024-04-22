@@ -31,11 +31,11 @@ func Routers(router *gin.Engine) {
 		gitRouter.GET("/callback", controller.GitCallBack)
 	}
 
-	adminRouter := router.Group("/auth")
+	adminRouter := router.Group("/admin")
 	adminRouter.Use(auth.AdminAuth)
 	{
-		adminRouter.GET("/blockip", controller.BlockIPRetrieval)
-		adminRouter.DELETE("/blockip", controller.BlockIPRemove)
+		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)
+		adminRouter.DELETE("/deleteblockip", controller.BlockIPRemove)
 	}
 
 }
