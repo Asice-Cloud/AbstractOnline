@@ -18,8 +18,8 @@ var (
 /*
 	type tokenResponse struct {
 		AccessToken string `json:"access_token"`
-		Scope       string `json:"scope"`
-		TokenType   string `json:"token_type"`
+		Scope string `json:"scope"`
+		TokenType string `json:"token_type"`
 	}
 */
 type UserResponse struct {
@@ -40,7 +40,7 @@ func InitialConfig() {
 	}
 }
 
-// If use PKCE, need to enable them
+// If you use PKCE, need to enable them
 /*func generateCodeVerifier() (string, error) {
 	randomBytes := make([]byte, 32)
 	if _, err := rand.Read(randomBytes); err != nil {
@@ -73,7 +73,7 @@ func GitLogin(context *gin.Context) {
 	// init oauth config
 	InitialConfig()
 
-	// If use PKCE:
+	// If you use PKCE:
 	/*var PKCE bool = false
 	if PKCE == true {
 		codeVerifier, err := generateCodeVerifier()
@@ -135,8 +135,8 @@ func GitCallBack(context *gin.Context) {
 	// The body contains the access token
 	context.JSON(http.StatusOK, gin.H{"access_token": string(body)})
 	var tokenResp tokenResponse
-	Parseerr := json.Unmarshal(body, &tokenResp)
-	if Parseerr != nil {
+	Parser := json.Unmarshal(body, &tokenResp)
+	if Parser != nil {
 		log.Printf("Failed to parse token response: %v", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse token response"})
 		return
@@ -171,7 +171,12 @@ func GetUserDetails(context *gin.Context, token string) {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send request"})
 		return
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 
 	// Read the response
 	body, err := io.ReadAll(resp.Body)

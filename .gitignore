@@ -8,4 +8,7 @@ out
 gen
 tmp
 
+
+!/nsqd.dat
 !/oha.exe
+!/dump.rdb

@@ -21,7 +21,7 @@ func Login(context *gin.Context) {
 // Index
 // User Home Page
 // @Tags User Home
-// @Success	200	{string} welcome,user
+// @Success	200	{string} welcome, user
 // @router /user/index [get]
 func Index(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
@@ -32,7 +32,7 @@ func Index(context *gin.Context) {
 // GetUserList
 // @Summary Find all user
 // @Tags UserModule
-// @Success	 200	{string} json{"code","message"}
+// @Success	200	{string} json{"code","message"}
 // @router /user/userlist [get]
 func GetUserList(context *gin.Context) {
 	var data []model.UserBasic

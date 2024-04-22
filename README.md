@@ -1,7 +1,5 @@
 ## Personal exercise project, an online chat system by Go
 
-
-
 ### structure :
 
 ```
@@ -27,4 +25,8 @@
 
 #### what will be added:
 
-msg quene, nginx, redis cache, token validator, grpc 
+msg quene, nginx, redis cache, token validator, grpc
+
+#### other more:
+
+Due to I am a student, I always delay to update by examination or more reasons.
