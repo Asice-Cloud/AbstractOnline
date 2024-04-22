@@ -9,6 +9,6 @@ gen
 tmp
 
 
-!/nsqd.dat
+nsqd.dat
 !/oha.exe
-!/dump.rdb
+dump.rdb
