@@ -29,21 +29,6 @@ func Index(context *gin.Context) {
 	})
 }
 
-// GetUserList
-// @Summary Find all user
-// @Tags UserModule
-// @Success	200	{string} json{"code","message"}
-// @router /user/userlist [get]
-func GetUserList(context *gin.Context) {
-	var data []model.UserBasic
-	data = service.GetUserList()
-	if len(data) != 0 {
-		context.JSON(http.StatusOK, gin.H{
-			"message": data,
-		})
-	}
-}
-
 // CreateUser
 // @Summary	Add user
 // @Tags UserModule
@@ -69,6 +54,7 @@ func CreateUser(context *gin.Context) {
 		context.JSON(-1, gin.H{
 			"message": "User already exist",
 		})
+		return
 	}
 	if err != nil {
 		context.JSON(-1, gin.H{

@@ -3,22 +3,31 @@ package service
 import (
 	"Chat/config"
 	"Chat/model"
+	"gorm.io/gorm"
 
 	"gorm.io/gorm/clause"
 )
 
-// Search all user
-func GetUserList() []model.UserBasic {
-	var data []model.UserBasic
-	config.DB.Model(&model.UserBasic{}).Find(&data)
-	return data
+// direct a user:
+func FinduUserByName(name string) *gorm.DB {
+	var exist_data model.UserBasic
+	return config.DB.Model(&model.UserBasic{}).Where("name = ?", name).First(&exist_data)
+}
+
+func FinduUserByPhone(phone string) *gorm.DB {
+	var exist_data model.UserBasic
+	return config.DB.Model(&model.UserBasic{}).Where("name = ?", phone).First(&exist_data)
+}
+
+func FinduUserByEmail(email string) *gorm.DB {
+	var exist_data model.UserBasic
+	return config.DB.Model(&model.UserBasic{}).Where("name = ?", email).First(&exist_data)
 }
 
 // Create new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
-	var exist_user model.UserBasic
-	result := tx.Where("name=?", user.Name).First(&exist_user)
+	result := FinduUserByName(user.Name)
 	if result.Error == nil {
 		tx.Rollback()
 		return -1, nil

@@ -2,7 +2,10 @@ package controller
 
 import (
 	"Chat/config"
+	"Chat/model"
+	"Chat/service"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"sync"
 )
 
@@ -61,4 +64,19 @@ func RemoveBlockIP(ctx *gin.Context, ip string) error {
 	mu.Lock()
 	defer mu.Unlock()
 	return config.Rdb.Del(ctx, ip).Err()
+}
+
+// GetUserList
+// @Summary Find all users
+// @Tags Admin
+// @Success	200	{string} json{"code","message"}
+// @router /admin/userlist [get]
+func GetUserList(context *gin.Context) {
+	var data []model.UserBasic
+	data = service.GetUserList()
+	if len(data) != 0 {
+		context.JSON(http.StatusOK, gin.H{
+			"message": data,
+		})
+	}
 }

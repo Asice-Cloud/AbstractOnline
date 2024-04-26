@@ -19,7 +19,6 @@ func Routers(router *gin.Engine) {
 	{
 		userRouter.GET("/login", controller.Login)
 		userRouter.GET("/index", controller.Index)
-		userRouter.GET("/userlist", controller.GetUserList)
 		userRouter.GET("/adduser", controller.CreateUser)
 		userRouter.DELETE("/deluser", controller.DeleteUser)
 		userRouter.POST("/updateuser", controller.UpdateUser)
@@ -34,6 +33,7 @@ func Routers(router *gin.Engine) {
 	adminRouter := router.Group("/admin")
 	adminRouter.Use(auth.AdminAuth)
 	{
+		adminRouter.GET("/userlist", controller.GetUserList)
 		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)
 		adminRouter.DELETE("/deleteblockip", controller.BlockIPRemove)
 	}

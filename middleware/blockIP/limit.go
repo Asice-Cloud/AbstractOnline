@@ -11,7 +11,7 @@ import (
 // LimitCount check the visit frequency if it is too frequent, blocking the IP
 func LimitCount(context *gin.Context) (err string) {
 	ip := context.ClientIP()
-	limiter := rate.NewLimiter(200, 1)
+	limiter := rate.NewLimiter(1000, 1)
 	if !limiter.Allow() {
 		// add this ip into blocked ip
 		mu.Lock()

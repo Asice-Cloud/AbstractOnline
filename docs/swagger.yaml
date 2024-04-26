@@ -19,6 +19,16 @@ paths:
             type: string
       tags:
       - Admin
+  /admin/userlist:
+    get:
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: Find all users
+      tags:
+      - Admin
   /git/login:
     get:
       responses:
@@ -115,16 +125,6 @@ paths:
           schema:
             type: string
       summary: Update user
-      tags:
-      - UserModule
-  /user/userlist:
-    get:
-      responses:
-        "200":
-          description: code","message"}
-          schema:
-            type: string
-      summary: Find all user
       tags:
       - UserModule
 swagger: "2.0"

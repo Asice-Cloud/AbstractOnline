@@ -45,6 +45,22 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/userlist": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Find all users",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/git/login": {
             "get": {
                 "tags": [
@@ -191,22 +207,6 @@ const docTemplate = `{
                         "in": "formData"
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "code\",\"message\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/userlist": {
-            "get": {
-                "tags": [
-                    "UserModule"
-                ],
-                "summary": "Find all user",
                 "responses": {
                     "200": {
                         "description": "code\",\"message\"}",
