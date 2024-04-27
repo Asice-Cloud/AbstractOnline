@@ -12,7 +12,7 @@
 |  └─auth          //verify ip, login ...
 |  └─blockIP       //ip blocked operation
 |  └─log           //middleware of logger
-|-model            //database
+|-model            //database model, gorm hook
 |-pkg              //algorithm for service
 |-response         //customize response information
 |-router           //router
