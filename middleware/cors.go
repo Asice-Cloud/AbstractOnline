@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 )
 
-func RouterInit() cors.Config {
+func CorsInit() cors.Config {
 	// set up CORS middleware
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}                                        // allowed origin，use * represent for plural

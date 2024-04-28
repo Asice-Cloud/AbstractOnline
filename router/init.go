@@ -12,7 +12,7 @@ func RouterInit() {
 	router := gin.Default()
 
 	// middleware
-	router.Use(cors.New(middleware.RouterInit()))
+	router.Use(cors.New(middleware.CorsInit()))
 	router.Use(gin.Logger())
 	router.Use(log.LoggingMiddleware())
 
