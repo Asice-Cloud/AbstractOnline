@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"Chat/pkg"
 	"fmt"
 	"github.com/asaskevich/govalidator"
 	"net/http"
@@ -12,9 +13,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Login
+// @Summary	user login
+// @Tags UserModule
+// @param name query string false "Name"
+// @param password query string false "Password"
+// @Success	200	{string} json{"code","message"}
+// @router /user/login [get]
 func Login(context *gin.Context) {
+	name := context.Query("name")
+	password := context.Query("password")
+	userID, err := service.Login(name, password)
+	if err != nil {
+		context.JSON(-1, gin.H{
+			"message": "Failed to login",
+		})
+		return
+	}
+	// Generate JWT token
+	token, err := pkg.GenerateJWT(fmt.Sprintf("%d", userID))
+	SessionSet(context, "userID", token)
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Login successfully",
+		"message": "Successfully login",
 	})
 }
 

@@ -16,6 +16,7 @@ func Routers(router *gin.Engine) {
 
 	userRouter := router.Group("/user")
 	userRouter.Use(blockIP.BlockIPMiddleware)
+	//userRouter.Use(auth.IfLogin)
 	{
 		userRouter.GET("/login", controller.Login)
 		userRouter.GET("/index", controller.Index)

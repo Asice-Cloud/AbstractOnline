@@ -112,6 +112,25 @@ paths:
             type: string
       tags:
       - User Home
+  /user/login:
+    get:
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Password
+        in: query
+        name: password
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: user login
+      tags:
+      - UserModule
   /user/updateuser:
     post:
       consumes:

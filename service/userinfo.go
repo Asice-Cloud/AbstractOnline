@@ -24,6 +24,16 @@ func FinduUserByEmail(email string) *gorm.DB {
 	return config.DB.Model(&model.UserBasic{}).Where("name = ?", email).First(&exist_data)
 }
 
+// login
+func Login(name string, password string) (rep interface{}, err error) {
+	var exist_data model.UserBasic
+	result := config.DB.Model(&model.UserBasic{}).Where("name = ? AND password = ?", name, password).First(&exist_data)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return exist_data.ID, nil
+}
+
 // Create new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
