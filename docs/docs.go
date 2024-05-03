@@ -30,6 +30,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/login": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/retrievalblockip": {
             "get": {
                 "tags": [

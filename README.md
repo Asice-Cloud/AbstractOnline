@@ -13,7 +13,7 @@
 |  └─blockIP       //ip blocked operation
 |  └─log           //middleware of logger
 |-model            //database model, hook
-|-pkg              //design for service: snowflake, jwt
+|-pkg              //designs for service: snowflake, jwt
 |-response         //customize response information
 |-router           //router 
 |-service          //model operation in business service

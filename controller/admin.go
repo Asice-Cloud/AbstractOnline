@@ -3,6 +3,7 @@ package controller
 import (
 	"Chat/config"
 	"Chat/model"
+	"Chat/pkg"
 	"Chat/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -12,6 +13,35 @@ import (
 var (
 	mu sync.Mutex
 )
+
+// AdminLogin
+// Admin Login
+// @Tags Admin
+// @param name query string false "Name"
+// @param password query string false "Password"
+// @Success	200 {string} json{"code","message"}
+// @router /admin/login [get]
+func AdminLogin(ctx *gin.Context) {
+	name := ctx.Query("name")
+	password := ctx.Query("password")
+	if name == "admin" && password == "admin" {
+		tokenString, err := pkg.GenerateJWT(name)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Could not generate token",
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "login success",
+		})
+		SessionSet(ctx, "token", tokenString)
+	} else {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"message": "login failed",
+		})
+	}
+}
 
 // BlockIPRetrieval
 // Admin Block IP Retrieval

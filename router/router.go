@@ -31,6 +31,9 @@ func Routers(router *gin.Engine) {
 	}
 
 	adminRouter := router.Group("/admin")
+	{
+		adminRouter.GET("/login", controller.AdminLogin)
+	}
 	adminRouter.Use(auth.AdminAuth)
 	{
 		adminRouter.GET("/userlist", controller.GetUserList)

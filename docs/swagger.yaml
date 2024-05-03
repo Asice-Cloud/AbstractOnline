@@ -10,6 +10,24 @@ paths:
             type: string
       tags:
       - Admin
+  /admin/login:
+    get:
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Password
+        in: query
+        name: password
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - Admin
   /admin/retrievalblockip:
     get:
       responses:
