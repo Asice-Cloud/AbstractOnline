@@ -23,6 +23,7 @@ func Routers(router *gin.Engine) {
 		userRouter.GET("/adduser", controller.CreateUser)
 		userRouter.DELETE("/deluser", controller.DeleteUser)
 		userRouter.POST("/updateuser", controller.UpdateUser)
+		userRouter.DELETE("/logout", controller.Logout)
 	}
 
 	gitRouter := router.Group("/git")

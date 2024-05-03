@@ -131,6 +131,21 @@ paths:
       summary: user login
       tags:
       - UserModule
+  /user/logout:
+    delete:
+      parameters:
+      - description: userID
+        in: query
+        name: userID
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: user login
+      tags:
+      - UserModule
   /user/updateuser:
     post:
       consumes:

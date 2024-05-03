@@ -4,6 +4,7 @@ import (
 	"Chat/pkg"
 	"fmt"
 	"github.com/asaskevich/govalidator"
+	"github.com/gin-contrib/sessions"
 	"net/http"
 	"strconv"
 
@@ -35,6 +36,31 @@ func Login(context *gin.Context) {
 	SessionSet(context, "userID", token)
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Successfully login",
+	})
+}
+
+// Logout
+// @Summary	user login
+// @Tags UserModule
+// @param userID query string false "userID"
+// @Success	200	{string} json{"code","message"}
+// @router /user/logout [delete]
+func Logout(context *gin.Context) {
+	userID, _ := strconv.Atoi(context.Query("userID"))
+	// Get the session for the user
+	session := sessions.Default(context)
+	userSession := session.Get(fmt.Sprintf("user_%d", userID))
+	if userSession == nil {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Not logged in",
+		})
+		return
+	}
+	// Delete the session for the user
+	session.Delete(fmt.Sprintf("user_%d", userID))
+	session.Save()
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Successfully logged out",
 	})
 }
 

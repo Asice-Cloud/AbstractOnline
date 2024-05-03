@@ -225,6 +225,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/logout": {
+            "delete": {
+                "tags": [
+                    "UserModule"
+                ],
+                "summary": "user login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userID",
+                        "name": "userID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/updateuser": {
             "post": {
                 "consumes": [
