@@ -1,15 +1,14 @@
 package controller
 
 import (
-	"Chat/pkg"
+	"Chat/model"
+	"Chat/response"
+	"Chat/service"
+	"errors"
 	"fmt"
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-contrib/sessions"
-	"net/http"
 	"strconv"
-
-	"Chat/model"
-	"Chat/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,18 +23,20 @@ import (
 func Login(context *gin.Context) {
 	name := context.Query("name")
 	password := context.Query("password")
-	userID, err := service.Login(name, password)
+	data, err := service.Login(name, password)
 	if err != nil {
-		context.JSON(-1, gin.H{
-			"message": "Failed to login",
-		})
+		response.RespError(context, response.CodeInvalidPassword)
 		return
 	}
-	// Generate JWT token
-	token, err := pkg.GenerateJWT(fmt.Sprintf("%d", userID), "user")
-	SessionSet(context, "user", token)
-	context.JSON(http.StatusOK, gin.H{
-		"message": "Successfully login",
+	user, ok := data.(model.UserBasic)
+	if !ok {
+		response.RespError(context, response.CodeInvalidToken)
+	}
+	response.RespSuccess(context, gin.H{
+		"user_id":       fmt.Sprintf("%d", user.ID), //js识别的最大值：id值大于1<<53-1  int64: i<<63-1
+		"user_name":     user.Name,
+		"access_token":  user.AccessToken,
+		"refresh_token": user.RefreshToken,
 	})
 }
 
@@ -51,17 +52,13 @@ func Logout(context *gin.Context) {
 	session := sessions.Default(context)
 	userSession := session.Get(fmt.Sprintf("user_%d", userID))
 	if userSession == nil {
-		context.JSON(http.StatusUnauthorized, gin.H{
-			"message": "Not logged in",
-		})
+		response.RespError(context, response.CodeNotLogin)
 		return
 	}
 	// Delete the session for the user
 	session.Delete(fmt.Sprintf("user_%d", userID))
 	session.Save()
-	context.JSON(http.StatusOK, gin.H{
-		"message": "Successfully logged out",
-	})
+	response.RespSuccess(context, "Successfully logout")
 }
 
 // Index
@@ -70,9 +67,7 @@ func Logout(context *gin.Context) {
 // @Success	200	{string} welcome, user
 // @router /user/index [get]
 func Index(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{
-		"message": "Welcome!",
-	})
+	response.RespSuccess(context, "Welcome")
 }
 
 // CreateUser
@@ -89,28 +84,20 @@ func CreateUser(context *gin.Context) {
 	password := context.Query("password")
 	repassword := context.Query("repassword")
 	if password != repassword {
-		context.JSON(-1, gin.H{
-			"message": "twice password is not matched",
-		})
+		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("twice passwords are not consistent"))
 		return
 	}
 	user.Password = password
 	rep, err := service.CreatUser(user)
 	if rep == -1 {
-		context.JSON(-1, gin.H{
-			"message": "User already exist",
-		})
+		response.RespError(context, response.CodeUserNotExist)
 		return
 	}
 	if err != nil {
-		context.JSON(-1, gin.H{
-			"message": "Failed to add user",
-		})
+		response.RespErrorWithMsg(context, response.CodeInvalidParams, err)
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Successfully create user: %d", rep),
-	})
+	response.RespSuccess(context, fmt.Sprintf("Successfully create user,ID: %v", &user.ID))
 }
 
 // DeleteUser
@@ -123,22 +110,16 @@ func DeleteUser(context *gin.Context) {
 	var user model.UserBasic
 	id, err := strconv.Atoi(context.Query("id"))
 	if err != nil {
-		context.JSON(-1, gin.H{
-			"message": "Please Input a valid number",
-		})
+		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("please input a valid number"))
 		return
 	}
 	user.ID = uint(id)
 	err = service.DeleteUser(user)
 	if err != nil {
-		context.JSON(-1, gin.H{
-			"message": "Failed to delete user",
-		})
+		response.RespError(context, response.CodeServerBusy)
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{
-		"message": "Successfully delete user",
-	})
+	response.RespSuccess(context, "Successfully delete user")
 }
 
 // UpdateUser
@@ -164,26 +145,61 @@ func UpdateUser(context *gin.Context) {
 	_, err := govalidator.ValidateStruct(user)
 	if err != nil {
 		fmt.Println(err)
-		context.JSON(-1, gin.H{
-			"message": "parameters not matched",
-		})
+		response.RespError(context, response.CodeInvalidParams)
 		return
 	} else {
 		rep, err := service.UpdateUser(user)
 		if err != nil {
-			context.JSON(-1, gin.H{
-				"message": "Failed to update user information",
-			})
+			response.RespErrorWithMsg(context, response.CodeServerBusy, errors.New("failed to update user"))
 			return
 		}
 		if rep == -1 {
-			context.JSON(-1, gin.H{
-				"message": "User not exists",
-			})
+			response.RespError(context, response.CodeUserNotExist)
 		}
-		context.JSON(http.StatusOK, gin.H{
-			"message": fmt.Sprintf("Successfully update user: %d", rep),
-		})
+		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", rep))
 	}
 
 }
+
+/**
+ * @Author huchao
+ * @Description //TODO 刷新accessToken
+ * @Date 17:09 2022/2/17
+ **/
+// RefreshTokenHandler 刷新accessToken
+// @Summary 刷新accessToken
+// @Description 刷新accessToken
+// @Tags 用户业务接口
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer 用户令牌"
+// @Param object query models.ParamPostList false "查询参数"
+// @Security ApiKeyAuth
+// @Success 200 {object} _ResponsePostList
+// @Router /refresh_token [GET]
+/*func RefreshTokenHandler(c *gin.Context) {
+	rt := c.Query("refresh_token")
+	// 客户端携带Token有三种方式 1.放在请求头 2.放在请求体 3.放在URI
+	// 这里假设Token放在Header的Authorization中，并使用Bearer开头
+	// 这里的具体实现方式要依据你的实际业务情况决定
+	authHeader := c.Request.Header.Get("Authorization")
+	if authHeader == "" {
+		ResponseErrorWithMsg(c, CodeInvalidToken, "请求头缺少Auth Token")
+		c.Abort()
+		return
+	}
+	// 按空格分割
+	parts := strings.SplitN(authHeader, " ", 2)
+	if !(len(parts) == 2 && parts[0] == "Bearer") {
+		ResponseErrorWithMsg(c, CodeInvalidToken, "Token格式不对")
+		c.Abort()
+		return
+	}
+	aToken, rToken, err := jwt.RefreshToken(parts[1], rt)
+	fmt.Println(err)
+	c.JSON(http.StatusOK, gin.H{
+		"access_token":  aToken,
+		"refresh_token": rToken,
+	})
+}
+*/

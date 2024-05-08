@@ -18,6 +18,8 @@ type UserBasic struct {
 	HeartBeatTime uint64
 	LogOutTime    uint64 `gorm:"column:login_out_time" json:"login_out_time"`
 	DeviceInfo    string
+	AccessToken   string
+	RefreshToken  string
 }
 
 func (table UserBasic) TableName() string {

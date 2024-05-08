@@ -4,15 +4,23 @@ import (
 	"Chat/config"
 	"Chat/model"
 	"Chat/pkg"
+	"Chat/response"
 	"Chat/service"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"sync"
 )
 
 var (
 	mu sync.Mutex
 )
+
+type AdminSession struct {
+	ID           int
+	AdminName    string
+	AccessToken  string
+	RefreshToken string
+}
 
 // AdminLogin
 // Admin Login
@@ -25,21 +33,20 @@ func AdminLogin(ctx *gin.Context) {
 	name := ctx.Query("name")
 	password := ctx.Query("password")
 	if name == "admin" && password == "admin" {
-		tokenString, err := pkg.GenerateJWT(name, "admin")
+		atoken, rtoken, err := pkg.GenToken(0, "admin")
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Could not generate token",
-			})
+			response.RespErrorWithMsg(ctx, response.CodeInvalidToken, errors.New("could not generate token"))
 			return
 		}
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "login success",
-		})
-		SessionSet(ctx, "admin", tokenString)
+		admin := AdminSession{
+			ID:           0,
+			AdminName:    name,
+			AccessToken:  atoken,
+			RefreshToken: rtoken,
+		}
+		response.RespSuccess(ctx, admin)
 	} else {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"message": "login failed",
-		})
+		response.RespSuccess(ctx, response.CodeInvalidPassword)
 	}
 }
 
@@ -52,14 +59,10 @@ func BlockIPRetrieval(ctx *gin.Context) {
 	// get the blocked IP
 	blockIp, err := RetrievalBlockIP(ctx)
 	if err != nil {
-		ctx.JSON(200, gin.H{
-			"message": "get blocked ip failed",
-		})
+		response.RespErrorWithMsg(ctx, response.CodeServerBusy, errors.New("get blocked ip failed"))
 		return
 	}
-	ctx.HTML(200, "blockIp.html", gin.H{
-		"blockIp": blockIp,
-	})
+	response.RespSuccess(ctx, blockIp)
 
 }
 
@@ -72,15 +75,10 @@ func BlockIPRemove(ctx *gin.Context) {
 	ip := ctx.Query("ip")
 	err := RemoveBlockIP(ctx, ip)
 	if err != nil {
-		ctx.JSON(200, gin.H{
-			"message": "remove blocked ip failed",
-		})
+		response.RespErrorWithMsg(ctx, response.CodeServerBusy, errors.New("remove blocked ip failed"))
 		return
 	}
-	ctx.JSON(200, gin.H{
-		"message": "remove blocked ip success",
-	})
-
+	response.RespSuccess(ctx, "remove blocked ip success")
 }
 
 func RetrievalBlockIP(ctx *gin.Context) (map[string]string, error) {
@@ -105,12 +103,8 @@ func GetUserList(context *gin.Context) {
 	var data []model.UserBasic
 	data = service.GetUserList()
 	if len(data) == 0 {
-		context.JSON(http.StatusOK, gin.H{
-			"message": "No user",
-		})
+		response.RespError(context, response.CodeUserNotExist)
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{
-		"message": data,
-	})
+	response.RespSuccess(context, data)
 }

@@ -2,7 +2,6 @@ package router
 
 import (
 	"Chat/controller"
-	"Chat/middleware/auth"
 	"Chat/middleware/blockIP"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -16,7 +15,6 @@ func Routers(router *gin.Engine) {
 
 	userRouter := router.Group("/user")
 	userRouter.Use(blockIP.BlockIPMiddleware)
-	//userRouter.Use(auth.IfLogin)
 	{
 		userRouter.GET("/login", controller.Login)
 		userRouter.GET("/index", controller.Index)
@@ -32,11 +30,15 @@ func Routers(router *gin.Engine) {
 		gitRouter.GET("/callback", controller.GitCallBack)
 	}
 
+	//admin module
 	adminRouter := router.Group("/admin")
+
+	adminRouter.GET("/login", controller.AdminLogin)
+
+	//adminRouter.Use(auth.JwtAuthMiddleware())
 	{
-		adminRouter.GET("/login", controller.AdminLogin)
-		adminRouter.Use(auth.AdminAuthMiddleware).GET("/userlist", controller.GetUserList)
-		adminRouter.Use(auth.AdminAuthMiddleware).GET("/retrievalblockip", controller.BlockIPRetrieval)
-		adminRouter.Use(auth.AdminAuthMiddleware).DELETE("/deleteblockip", controller.BlockIPRemove)
+		adminRouter.GET("/userlist", controller.GetUserList)
+		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)
+		adminRouter.DELETE("/deleteblockip", controller.BlockIPRemove)
 	}
 }

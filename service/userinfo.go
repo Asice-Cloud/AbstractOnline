@@ -3,13 +3,14 @@ package service
 import (
 	"Chat/config"
 	"Chat/model"
+	"Chat/pkg"
 	"gorm.io/gorm"
 
 	"gorm.io/gorm/clause"
 )
 
 // direct a user:
-func FinduUserByName(name string) *gorm.DB {
+func FindUserByName(name string) *gorm.DB {
 	var exist_data model.UserBasic
 	return config.DB.Model(&model.UserBasic{}).Where("name = ?", name).First(&exist_data)
 }
@@ -31,13 +32,17 @@ func Login(name string, password string) (rep interface{}, err error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return exist_data.ID, nil
+	// Generate JWT token
+	atoken, rtoken, err := pkg.GenToken(uint64(exist_data.ID), name)
+	exist_data.AccessToken = atoken
+	exist_data.RefreshToken = rtoken
+	return exist_data, nil
 }
 
 // Create new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
-	result := FinduUserByName(user.Name)
+	result := FindUserByName(user.Name)
 	if result.Error == nil {
 		tx.Rollback()
 		return -1, nil
