@@ -44,6 +44,7 @@ func AdminLogin(ctx *gin.Context) {
 			AccessToken:  atoken,
 			RefreshToken: rtoken,
 		}
+		SessionSet(ctx, "admin", admin)
 		response.RespSuccess(ctx, admin)
 	} else {
 		response.RespSuccess(ctx, response.CodeInvalidPassword)

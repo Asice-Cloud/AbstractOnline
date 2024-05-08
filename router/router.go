@@ -15,6 +15,7 @@ func Routers(router *gin.Engine) {
 
 	userRouter := router.Group("/user")
 	userRouter.Use(blockIP.BlockIPMiddleware)
+	//userRouter.Use(auth.UserJwtAuthMiddleware())
 	{
 		userRouter.GET("/login", controller.Login)
 		userRouter.GET("/index", controller.Index)
@@ -35,7 +36,7 @@ func Routers(router *gin.Engine) {
 
 	adminRouter.GET("/login", controller.AdminLogin)
 
-	//adminRouter.Use(auth.JwtAuthMiddleware())
+	//adminRouter.Use(auth.AdminJwtAuthMiddleware())
 	{
 		adminRouter.GET("/userlist", controller.GetUserList)
 		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)

@@ -7,12 +7,6 @@ import (
 	"log"
 )
 
-type UserSession struct {
-	ID       int
-	Username string
-	Level    int
-}
-
 func SessionGet(c *gin.Context, name string) any {
 	session := sessions.Default(c)
 	return session.Get(name)

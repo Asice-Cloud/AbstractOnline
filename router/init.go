@@ -20,6 +20,7 @@ func RouterInit() {
 	//set session
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
+
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"
 	docs.SwaggerInfo.Version = "1.0"

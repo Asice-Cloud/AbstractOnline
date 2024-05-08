@@ -99,6 +99,13 @@ func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
 		tx.Rollback()
 		return nil, result.Error
 	}
+	aToken, rToken, err := pkg.GenToken(uint64(exist.ID), exist.Name)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	tx.Commit()
-	return exist.ID, nil
+	exist.AccessToken = aToken
+	exist.RefreshToken = rToken
+	return exist, nil
 }

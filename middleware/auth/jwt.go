@@ -1,42 +1,66 @@
 package auth
 
 import (
+	"Chat/controller"
 	"Chat/pkg"
 	"Chat/response"
-	"fmt"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"strings"
+	"log"
 )
 
-func JwtAuthMiddleware() func(ctx *gin.Context) {
+func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 	return func(c *gin.Context) {
-		// 客户端携带Token有三种方式 1.放在请求头 2.放在请求体 3.放在URI
-		// 这里假设Token放在Header的Authorization中，并使用Bearer开头
-		// 这里的具体实现方式要依据你的实际业务情况决定
-		authHeader := c.Request.Header.Get("Authorization")
-		if authHeader == "" {
-			response.RespErrorWithMsg(c, response.CodeInvalidToken, "请求头缺少Auth Token")
+		authSession := controller.SessionGet(c, "admin")
+		if authSession == nil {
+			response.RespErrorWithMsg(c, response.CodeInvalidToken, errors.New("empty token"))
 			c.Abort()
 			return
 		}
-
-		// 按空格分割
-		parts := strings.SplitN(authHeader, " ", 2)
-		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			response.RespErrorWithMsg(c, response.CodeInvalidToken, "Token格式不对")
-			c.Abort()
-			return
-		}
-		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
-		mc, err := pkg.ParseToken(parts[1])
-		if err != nil {
-			fmt.Println(err)
+		authToken, ok := authSession.(controller.AdminSession)
+		if !ok {
 			response.RespError(c, response.CodeInvalidToken)
 			c.Abort()
 			return
 		}
-		// 将当前请求的userID信息保存到请求的上下文c上
-		c.Set("userID", mc.UserID)
+		mc, err := pkg.ParseToken(authToken.AccessToken)
+		if err != nil {
+			log.Println(err)
+			response.RespError(c, response.CodeInvalidToken)
+			c.Abort()
+			return
+		}
+		if mc.UserID != 0 && mc.Username != "admin" {
+			response.RespError(c, response.CodeInvalidToken)
+			c.Abort()
+			return
+		} else {
+			c.Next() // 后续的处理函数可以用过c.Get(ContextUserIDKey)来获取当前请求的用户信息
+		}
+	}
+}
+
+func UserJwtAuthMiddleware() func(ctx *gin.Context) {
+	return func(c *gin.Context) {
+		authSession := controller.SessionGet(c, "user")
+		if authSession == nil {
+			response.RespErrorWithMsg(c, response.CodeInvalidToken, errors.New("empty token"))
+			c.Abort()
+			return
+		}
+		authToken, ok := authSession.(controller.UserSession)
+		if !ok {
+			response.RespError(c, response.CodeInvalidToken)
+			c.Abort()
+			return
+		}
+		_, err := pkg.ParseToken(authToken.AccessToken)
+		if err != nil {
+			log.Println(err)
+			response.RespError(c, response.CodeInvalidToken)
+			c.Abort()
+			return
+		}
 		c.Next() // 后续的处理函数可以用过c.Get(ContextUserIDKey)来获取当前请求的用户信息
 	}
 }

@@ -13,6 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UserSession struct {
+	UserID       int
+	UserName     string
+	AccessToken  string
+	RefreshToken string
+}
+
 // Login
 // @Summary	user login
 // @Tags UserModule
@@ -32,12 +39,15 @@ func Login(context *gin.Context) {
 	if !ok {
 		response.RespError(context, response.CodeInvalidToken)
 	}
-	response.RespSuccess(context, gin.H{
-		"user_id":       fmt.Sprintf("%d", user.ID), //js识别的最大值：id值大于1<<53-1  int64: i<<63-1
-		"user_name":     user.Name,
-		"access_token":  user.AccessToken,
-		"refresh_token": user.RefreshToken,
-	})
+	// Set the session for the user
+	userSession := UserSession{
+		UserID:       int(user.ID),
+		UserName:     user.Name,
+		AccessToken:  user.AccessToken,
+		RefreshToken: user.RefreshToken,
+	}
+	SessionSet(context, fmt.Sprintf("user_%d", user.ID), userSession)
+	response.RespSuccess(context, userSession)
 }
 
 // Logout
@@ -142,6 +152,12 @@ func UpdateUser(context *gin.Context) {
 	user.Phone = context.PostForm("phone")
 	user.Email = context.PostForm("email")
 
+	userSession := SessionGet(context, fmt.Sprintf("user_%d", user.ID))
+	if userSession == nil {
+		response.RespError(context, response.CodeNotLogin)
+		return
+	}
+
 	_, err := govalidator.ValidateStruct(user)
 	if err != nil {
 		fmt.Println(err)
@@ -156,9 +172,17 @@ func UpdateUser(context *gin.Context) {
 		if rep == -1 {
 			response.RespError(context, response.CodeUserNotExist)
 		}
-		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", rep))
+		// Update the session for the user
+		userData := rep.(model.UserBasic)
+		data := UserSession{
+			UserID:       int(userData.ID),
+			UserName:     userData.Name,
+			AccessToken:  userData.AccessToken,
+			RefreshToken: userData.RefreshToken,
+		}
+		SessionUpdate(context, fmt.Sprintf("user_%d", user.ID), data)
+		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", data))
 	}
-
 }
 
 /**
