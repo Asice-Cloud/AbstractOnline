@@ -35,12 +35,8 @@ func Routers(router *gin.Engine) {
 	adminRouter := router.Group("/admin")
 	{
 		adminRouter.GET("/login", controller.AdminLogin)
+		adminRouter.Use(auth.AdminAuthMiddleware).GET("/userlist", controller.GetUserList)
+		adminRouter.Use(auth.AdminAuthMiddleware).GET("/retrievalblockip", controller.BlockIPRetrieval)
+		adminRouter.Use(auth.AdminAuthMiddleware).DELETE("/deleteblockip", controller.BlockIPRemove)
 	}
-	adminRouter.Use(auth.AdminAuth)
-	{
-		adminRouter.GET("/userlist", controller.GetUserList)
-		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)
-		adminRouter.DELETE("/deleteblockip", controller.BlockIPRemove)
-	}
-
 }

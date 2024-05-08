@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type UserSession struct {
@@ -18,6 +19,7 @@ func SessionGet(c *gin.Context, name string) any {
 }
 
 func SessionSet(c *gin.Context, name string, body any) {
+	//log.Printf("SessionSet: setting session for %s\n", name) // Add log here
 	session := sessions.Default(c)
 	if body == nil {
 		return
@@ -28,8 +30,11 @@ func SessionSet(c *gin.Context, name string, body any) {
 	session.Options(sessions.Options{
 		MaxAge: 1800, // 30 minutes
 	})
-	session.Save()
-
+	err := session.Save()
+	if err != nil {
+		log.Printf("Error saving session: %v", err)
+	}
+	//log.Printf("SessionSet: session set for %s\n", name) // Add log here
 }
 
 func SessionUpdate(c *gin.Context, name string, body any) {

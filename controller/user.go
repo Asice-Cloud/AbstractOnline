@@ -32,8 +32,8 @@ func Login(context *gin.Context) {
 		return
 	}
 	// Generate JWT token
-	token, err := pkg.GenerateJWT(fmt.Sprintf("%d", userID))
-	SessionSet(context, "userID", token)
+	token, err := pkg.GenerateJWT(fmt.Sprintf("%d", userID), "user")
+	SessionSet(context, "user", token)
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Successfully login",
 	})

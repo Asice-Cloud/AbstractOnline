@@ -74,6 +74,10 @@ func DeleteUser(user model.UserBasic) error {
 // Update user
 func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
+	if err := user.OptimisticLock(tx); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	var exist model.UserBasic
 	result := tx.Where("id=?", user.ID).First(&exist)
 	if result.Error != nil {

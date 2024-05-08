@@ -25,7 +25,7 @@ func AdminLogin(ctx *gin.Context) {
 	name := ctx.Query("name")
 	password := ctx.Query("password")
 	if name == "admin" && password == "admin" {
-		tokenString, err := pkg.GenerateJWT(name)
+		tokenString, err := pkg.GenerateJWT(name, "admin")
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Could not generate token",
@@ -35,7 +35,7 @@ func AdminLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "login success",
 		})
-		SessionSet(ctx, "token", tokenString)
+		SessionSet(ctx, "admin", tokenString)
 	} else {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "login failed",
@@ -104,9 +104,13 @@ func RemoveBlockIP(ctx *gin.Context, ip string) error {
 func GetUserList(context *gin.Context) {
 	var data []model.UserBasic
 	data = service.GetUserList()
-	if len(data) != 0 {
+	if len(data) == 0 {
 		context.JSON(http.StatusOK, gin.H{
-			"message": data,
+			"message": "No user",
 		})
+		return
 	}
+	context.JSON(http.StatusOK, gin.H{
+		"message": data,
+	})
 }
