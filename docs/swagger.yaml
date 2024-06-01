@@ -146,6 +146,25 @@ paths:
       summary: user login
       tags:
       - UserModule
+  /user/searchuser:
+    post:
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Password
+        in: query
+        name: password
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      summary: Find user
+      tags:
+      - UserModule
   /user/updateuser:
     post:
       consumes:

@@ -4,52 +4,40 @@ import (
 	"Chat/config"
 	"Chat/model"
 	"Chat/pkg"
-	"gorm.io/gorm"
-
+	"Chat/utils"
+	"fmt"
 	"gorm.io/gorm/clause"
+	"math/rand"
 )
 
-// direct a user:
-func FindUserByName(name string) *gorm.DB {
+// search user
+func FindByName(name string) model.UserBasic {
 	var exist_data model.UserBasic
-	return config.DB.Model(&model.UserBasic{}).Where("name = ?", name).First(&exist_data)
+	config.DB.Model(&model.UserBasic{}).Where("name = ?", name).First(&exist_data)
+	return exist_data
 }
-
-func FinduUserByPhone(phone string) *gorm.DB {
+func FindUserByNameAndPwd(name, password string) model.UserBasic {
 	var exist_data model.UserBasic
-	return config.DB.Model(&model.UserBasic{}).Where("name = ?", phone).First(&exist_data)
-}
-
-func FinduUserByEmail(email string) *gorm.DB {
-	var exist_data model.UserBasic
-	return config.DB.Model(&model.UserBasic{}).Where("name = ?", email).First(&exist_data)
-}
-
-// login
-func Login(name string, password string) (rep interface{}, err error) {
-	var exist_data model.UserBasic
-	result := config.DB.Model(&model.UserBasic{}).Where("name = ? AND password = ?", name, password).First(&exist_data)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	// Generate JWT token
-	atoken, rtoken, err := pkg.GenToken(uint64(exist_data.ID), name)
-	exist_data.AccessToken = atoken
-	exist_data.RefreshToken = rtoken
-	return exist_data, nil
+	config.DB.Model(&model.UserBasic{}).Where("name = ? and password = ?", name, password).First(&exist_data)
+	return exist_data
 }
 
 // Create new user
 func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	tx := config.DB.Begin()
-	result := FindUserByName(user.Name)
+	var exist_data model.UserBasic
+	result := config.DB.Model(&model.UserBasic{}).Where("name = ?", user.Name).First(&exist_data)
 	if result.Error == nil {
 		tx.Rollback()
 		return -1, nil
 	}
+	salt := fmt.Sprintf("%06d", rand.Int31())
+	user.Password = utils.MakePassword(user.Password, salt)
+
 	data := &model.UserBasic{
 		Name:     user.Name,
 		Password: user.Password,
+		Salt:     salt,
 	}
 	result = tx.Clauses(clause.OnConflict{DoNothing: true}).Create(&data)
 	if result.Error != nil {
@@ -58,6 +46,20 @@ func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	}
 	tx.Commit()
 	return data.ID, nil
+}
+
+// login
+func Login(name string, password string) (rep interface{}, err error) {
+	var exist_data model.UserBasic
+	result := config.DB.Model(&model.UserBasic{}).Where("name = ? AND pass_word = ?", name, password).First(&exist_data)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	// Generate JWT token
+	atoken, rtoken, err := pkg.GenToken(uint64(exist_data.ID), name)
+	exist_data.AccessToken = atoken
+	exist_data.RefreshToken = rtoken
+	return exist_data, nil
 }
 
 // Delete existing user

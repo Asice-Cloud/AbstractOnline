@@ -4,10 +4,10 @@ import (
 	"Chat/model"
 	"Chat/response"
 	"Chat/service"
+	"Chat/utils"
 	"errors"
 	"fmt"
 	"github.com/asaskevich/govalidator"
-	"github.com/gin-contrib/sessions"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -18,57 +18,6 @@ type UserSession struct {
 	UserName     string
 	AccessToken  string
 	RefreshToken string
-}
-
-// Login
-// @Summary	user login
-// @Tags UserModule
-// @param name query string false "Name"
-// @param password query string false "Password"
-// @Success	200	{string} json{"code","message"}
-// @router /user/login [get]
-func Login(context *gin.Context) {
-	name := context.Query("name")
-	password := context.Query("password")
-	data, err := service.Login(name, password)
-	if err != nil {
-		response.RespError(context, response.CodeInvalidPassword)
-		return
-	}
-	user, ok := data.(model.UserBasic)
-	if !ok {
-		response.RespError(context, response.CodeInvalidToken)
-	}
-	// Set the session for the user
-	userSession := UserSession{
-		UserID:       int(user.ID),
-		UserName:     user.Name,
-		AccessToken:  user.AccessToken,
-		RefreshToken: user.RefreshToken,
-	}
-	SessionSet(context, fmt.Sprintf("user_%d", user.ID), userSession)
-	response.RespSuccess(context, userSession)
-}
-
-// Logout
-// @Summary	user login
-// @Tags UserModule
-// @param userID query string false "userID"
-// @Success	200	{string} json{"code","message"}
-// @router /user/logout [delete]
-func Logout(context *gin.Context) {
-	userID, _ := strconv.Atoi(context.Query("userID"))
-	// Get the session for the user
-	session := sessions.Default(context)
-	userSession := session.Get(fmt.Sprintf("user_%d", userID))
-	if userSession == nil {
-		response.RespError(context, response.CodeNotLogin)
-		return
-	}
-	// Delete the session for the user
-	session.Delete(fmt.Sprintf("user_%d", userID))
-	session.Save()
-	response.RespSuccess(context, "Successfully logout")
 }
 
 // Index
@@ -97,10 +46,9 @@ func CreateUser(context *gin.Context) {
 		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("twice passwords are not consistent"))
 		return
 	}
-	user.Password = password
 	rep, err := service.CreatUser(user)
 	if rep == -1 {
-		response.RespError(context, response.CodeUserNotExist)
+		response.RespError(context, response.CodeUserExist)
 		return
 	}
 	if err != nil {
@@ -183,6 +131,81 @@ func UpdateUser(context *gin.Context) {
 		SessionUpdate(context, fmt.Sprintf("user_%d", user.ID), data)
 		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", data))
 	}
+}
+
+// SearchUser
+// @Summary Find user
+// @Tags UserModule
+// @param name query string false "Name"
+// @param password query string false "Password"
+// @Success	200	{string} json{"code","message"}
+// @router /user/searchuser [post]
+func SearchUser(context *gin.Context) {
+	var data model.UserBasic
+	name := context.Query("name")
+	password := context.Query("password")
+	data = service.FindByName(name)
+	// should change to another identification
+	if data.Name == "" {
+		response.RespError(context, response.CodeUserNotExist)
+		return
+	}
+	exist := utils.ValidPassword(password, data.Salt, data.Password)
+	if !exist {
+		response.RespError(context, response.CodeInvalidPassword)
+		return
+	}
+	pwd := utils.MakePassword(password, data.Salt)
+	data = service.FindUserByNameAndPwd(name, pwd)
+	response.RespSuccess(context, data)
+}
+
+// Login
+// @Summary	user login
+// @Tags UserModule
+// @param name query string false "Name"
+// @param password query string false "Password"
+// @Success	200	{string} json{"code","message"}
+// @router /user/login [get]
+func Login(context *gin.Context) {
+	name := context.Query("name")
+	password := context.Query("password")
+	data, err := service.Login(name, password)
+	if err != nil {
+		response.RespError(context, response.CodeInvalidPassword)
+		return
+	}
+	user, ok := data.(model.UserBasic)
+	if !ok {
+		response.RespError(context, response.CodeInvalidToken)
+	}
+	// Set the session for the user
+	userSession := UserSession{
+		UserID:       int(user.ID),
+		UserName:     user.Name,
+		AccessToken:  user.AccessToken,
+		RefreshToken: user.RefreshToken,
+	}
+	SessionSet(context, fmt.Sprintf("user_%d", user.ID), userSession)
+	response.RespSuccess(context, userSession)
+}
+
+// Logout
+// @Summary	user login
+// @Tags UserModule
+// @param userID query string false "userID"
+// @Success	200	{string} json{"code","message"}
+// @router /user/logout [delete]
+func Logout(context *gin.Context) {
+	userID, _ := strconv.Atoi(context.Query("userID"))
+	userSession := SessionGet(context, fmt.Sprintf("user_%d", userID))
+	if userSession == nil {
+		response.RespError(context, response.CodeNotLogin)
+		return
+	}
+	// Delete the session for the user
+	SessionDelete(context, fmt.Sprintf("user_%d", userID))
+	response.RespSuccess(context, "Successfully logout")
 }
 
 /**

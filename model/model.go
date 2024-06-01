@@ -2,6 +2,7 @@ package model
 
 import (
 	"gorm.io/gorm"
+	"time"
 )
 
 type UserBasic struct {
@@ -14,9 +15,10 @@ type UserBasic struct {
 	Identity      string
 	ClientIp      string
 	ClientPort    string
-	LoginTime     uint64
-	HeartBeatTime uint64
-	LogOutTime    uint64 `gorm:"column:login_out_time" json:"login_out_time"`
+	Salt          string
+	LoginTime     time.Time
+	HeartBeatTime time.Time
+	LogOutTime    time.Time `gorm:"column:login_out_time" json:"login_out_time"`
 	DeviceInfo    string
 	AccessToken   string
 	RefreshToken  string

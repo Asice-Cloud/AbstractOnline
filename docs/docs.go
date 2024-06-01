@@ -249,6 +249,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/searchuser": {
+            "post": {
+                "tags": [
+                    "UserModule"
+                ],
+                "summary": "Find user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/updateuser": {
             "post": {
                 "consumes": [
