@@ -8,9 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/asaskevich/govalidator"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 type UserSession struct {
@@ -208,12 +207,7 @@ func Logout(context *gin.Context) {
 	response.RespSuccess(context, "Successfully logout")
 }
 
-/**
- * @Author huchao
- * @Description //TODO 刷新accessToken
- * @Date 17:09 2022/2/17
- **/
-// RefreshTokenHandler 刷新accessToken
+/*// RefreshTokenHandler 刷新accessToken
 // @Summary 刷新accessToken
 // @Description 刷新accessToken
 // @Tags 用户业务接口
@@ -224,7 +218,7 @@ func Logout(context *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} _ResponsePostList
 // @Router /refresh_token [GET]
-/*func RefreshTokenHandler(c *gin.Context) {
+func RefreshTokenHandler(c *gin.Context) {
 	rt := c.Query("refresh_token")
 	// 客户端携带Token有三种方式 1.放在请求头 2.放在请求体 3.放在URI
 	// 这里假设Token放在Header的Authorization中，并使用Bearer开头

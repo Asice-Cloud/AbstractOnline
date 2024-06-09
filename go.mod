@@ -7,9 +7,9 @@ require (
 	github.com/gin-contrib/cors v1.7.1
 	github.com/gin-contrib/sessions v1.0.0
 	github.com/gin-gonic/gin v1.9.1
-	github.com/golang-jwt/jwt/v5 v5.2.1
-	github.com/gorilla/sessions v1.2.2
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/redis/go-redis/v9 v9.5.1
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/viper v1.18.2
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
@@ -18,6 +18,12 @@ require (
 	golang.org/x/time v0.5.0
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.8
+)
+
+require (
+	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
+	github.com/gomodule/redigo v2.0.0+incompatible // indirect
+	github.com/gorilla/sessions v1.2.2 // indirect
 )
 
 require (
