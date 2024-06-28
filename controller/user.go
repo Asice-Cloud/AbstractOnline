@@ -67,8 +67,8 @@ func DeleteUser(context *gin.Context) {
 	var user model.UserBasic
 	id, err := strconv.Atoi(context.Query("id"))
 	if err != nil {
-		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("please input a valid number"))
 		return
+		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("please input a valid number"))
 	}
 	user.ID = uint(id)
 	err = service.DeleteUser(user)

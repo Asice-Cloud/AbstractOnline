@@ -9,7 +9,7 @@
 |-docs             //swagger docs
 |-logger           //record log by thread pool
 |-middleware       //middleware
-|  └─auth          //verify ip, login ...
+|  └─auth          //authorization ...
 |  └─blockIP       //ip blocked operation
 |  └─log           //middleware of logger
 |-model            //database model, hook
@@ -22,7 +22,7 @@
 |  └─css           //css
 |  └─js            //js
 |-template         //html template
-|-utils            //tools: md5 ...
+|-utils            //md5 ...
 ```
 
 #### what will be added:
@@ -32,3 +32,9 @@ msg quene, nginx, redis, token validator...  (distributed system frame?)
 #### other more:
 
 Due to I am a student, I always delay to update by examination or other reasons.
+
+#### By the way:
+
+F***k you CSDN
+
+

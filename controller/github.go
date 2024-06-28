@@ -174,7 +174,8 @@ func GetUserDetails(context *gin.Context, token string) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			log.Fatalln("Failed to close body")
+			return
 		}
 	}(resp.Body)
 
