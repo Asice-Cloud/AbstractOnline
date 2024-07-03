@@ -4,6 +4,8 @@ import (
 	"Chat/docs"
 	"Chat/middleware"
 	"Chat/middleware/log"
+	"Chat/utils"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
@@ -32,8 +34,13 @@ func RouterInit() {
 	router.Static("/static", "./static")
 
 	Routers(router)
-	err := router.Run(":9999")
-	if err != nil {
-		return
-	}
+
+	utils.Try(func() {
+		router.Run(":9999")
+	}).CatchAll(func(err error) {
+		fmt.Println("Error on request", err)
+		panic(err)
+	}).Finally(func() {
+		fmt.Println("Initialize done")
+	})
 }
