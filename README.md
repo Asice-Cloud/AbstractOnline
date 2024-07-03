@@ -22,7 +22,7 @@
 |  └─css           //css
 |  └─js            //js
 |-template         //html template
-|-utils            //md5 ...
+|-utils            //tool and mechanism ...
 ```
 
 #### what will be added:
