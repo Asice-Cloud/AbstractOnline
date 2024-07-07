@@ -6,7 +6,9 @@ import (
 	"Chat/pkg"
 	"Chat/utils"
 	"fmt"
+	"github.com/jaevor/go-nanoid"
 	"gorm.io/gorm/clause"
+	"log"
 	"math/rand"
 )
 
@@ -34,7 +36,13 @@ func CreatUser(user model.UserBasic) (rep interface{}, err error) {
 	salt := fmt.Sprintf("%06d", rand.Int31())
 	user.Password = utils.MakePassword(user.Password, salt)
 
+	gen, err := nanoid.Canonic()
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
 	data := &model.UserBasic{
+		UUID:     gen(),
 		Name:     user.Name,
 		Password: user.Password,
 		Salt:     salt,
