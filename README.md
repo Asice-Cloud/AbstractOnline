@@ -10,6 +10,7 @@
 |-logger           //record log by thread pool
 |-middleware       //middleware
 |  └─auth          //authorization ...
+|  └─balance       //LoadBalance
 |  └─blockIP       //ip blocked operation
 |  └─log           //middleware of logger
 |-model            //database model, hook
@@ -25,6 +26,8 @@
 |-utils            //tool and mechanism ...
 ```
 
+![](structure.png)
+
 #### what will be added:
 
 msg quene, nginx, redis, token validator...  (distributed system frame?)
@@ -36,5 +39,3 @@ Due to I am a student, I always delay to update by examination or other reasons.
 #### By the way:
 
 F***k you CSDN
-
-

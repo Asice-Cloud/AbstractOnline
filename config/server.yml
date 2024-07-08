@@ -1,0 +1,3 @@
+servers:
+  - url: "http://server1.example.com"
+  - url: "http://server2.example.com"
