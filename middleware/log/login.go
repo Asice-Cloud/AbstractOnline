@@ -13,19 +13,19 @@ var logPool = logger.NewLogPool(10)
 // Limit the max count of synchronic requesets
 
 // record the log of request
-func LoggingMiddleware() gin.HandlerFunc {
+func LoginMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Before request
 		userIP := c.ClientIP()
 		logTime := time.Now()
 		logMessage := fmt.Sprintf("User IP: %s, Request Time: %s", userIP, logTime)
-		logPool.Log(logMessage)
+		logPool.Log(1, logMessage)
 
 		c.Next()
 
 		// After request
 		status := c.Writer.Status()
 		logMessage = fmt.Sprintf("User IP: %s, Request Time: %s, Status: %d", userIP, logTime, status)
-		logPool.Log(logMessage)
+		logPool.Log(1, logMessage)
 	}
 }

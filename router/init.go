@@ -18,7 +18,7 @@ func RouterInit() {
 	// middleware
 	router.Use(cors.New(middleware.CorsInit()))
 	router.Use(gin.Logger())
-	router.Use(log.LoggingMiddleware())
+	router.Use(log.LoginMiddleware())
 	//set session
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))

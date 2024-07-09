@@ -3,6 +3,7 @@ package logger
 import (
 	"log"
 	"sync"
+	"time"
 )
 
 // create thread pool for recording log
@@ -10,16 +11,14 @@ type LogTask struct {
 	message string
 	done    chan bool
 }
-
 type LogPool struct {
-	tasks chan LogTask
+	tasks chan LogEntry
 	wg    sync.WaitGroup
 }
 
-// NewLogPool Implement the methods of LogPool
 func NewLogPool(workCount int) *LogPool {
 	pool := &LogPool{
-		tasks: make(chan LogTask),
+		tasks: make(chan LogEntry),
 	}
 
 	pool.Start(workCount)
@@ -34,22 +33,19 @@ func (pool *LogPool) Start(workCount int) {
 		go func() {
 			defer pool.wg.Done()
 			for task := range pool.tasks {
-				log.Println(task.message)
-				task.done <- true
+				log.Println(task.String())
+				// Assuming a done channel is no longer needed as logging is synchronous
 			}
 		}()
 	}
 }
 
-func (pool *LogPool) Log(message string) {
-	done := make(chan bool)
-
-	pool.tasks <- LogTask{
-		message: message,
-		done:    done,
+func (pool *LogPool) Log(level LogLevel, message string) {
+	pool.tasks <- LogEntry{
+		Timestamp: time.Now(),
+		Level:     level,
+		Message:   message,
 	}
-
-	<-done
 }
 
 func (pool *LogPool) Stop() {
