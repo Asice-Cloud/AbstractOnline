@@ -36,11 +36,13 @@ func RouterInit() {
 	Routers(router)
 
 	utils.Try(func() {
-		router.Run(":9999")
+		err := router.Run(":9999")
+		if err != nil {
+			utils.Throw(err)
+		}
 	}).CatchAll(func(err error) {
-		fmt.Println("Error on request", err)
-		panic(err)
+		fmt.Printf("Caught: %v\n", err)
 	}).Finally(func() {
-		fmt.Println("Initialize done")
+		fmt.Println("finally")
 	})
 }

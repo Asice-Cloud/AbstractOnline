@@ -1,8 +1,17 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 )
+
+type ErrorHolder struct {
+	err error
+}
+
+func Throw(err error) {
+	panic(ErrorHolder{err: err})
+}
 
 type FinallyHandler interface {
 	Finally(handlers ...func())
@@ -22,32 +31,23 @@ type catchHandler struct {
 func Try(f func()) CatchHandler {
 	t := &catchHandler{}
 	defer func() {
-		defer func() {
-			r := recover()
-			if r != nil {
-				t.err = r.(error)
+		if r := recover(); r != nil {
+			if eh, ok := r.(ErrorHolder); ok {
+				t.err = eh.err
+			} else if err, ok := r.(error); ok {
+				t.err = err
+			} else {
+				t.err = fmt.Errorf("unknown panic: %v", r)
 			}
-		}()
-		f()
+			t.hasCatch = false
+		}
 	}()
+	f()
 	return t
 }
 
-func (t *catchHandler) RequireCatch() bool {
-	if t.hasCatch {
-		return false
-	}
-	if t.err == nil {
-		return false
-	}
-	return true
-}
-
 func (t *catchHandler) Catch(e error, handler func(err error)) CatchHandler {
-	if !t.RequireCatch() {
-		return t
-	}
-	if reflect.TypeOf(e) == reflect.TypeOf(t.err) {
+	if t.err != nil && !t.hasCatch && reflect.TypeOf(t.err) == reflect.TypeOf(e) {
 		handler(t.err)
 		t.hasCatch = true
 	}
@@ -55,43 +55,39 @@ func (t *catchHandler) Catch(e error, handler func(err error)) CatchHandler {
 }
 
 func (t *catchHandler) CatchAll(handler func(err error)) FinallyHandler {
-	if !t.RequireCatch() {
-		return t
+	if t.err != nil && !t.hasCatch {
+		handler(t.err)
 	}
-	handler(t.err)
-	t.hasCatch = true
 	return t
 }
 
 func (t *catchHandler) Finally(handlers ...func()) {
 	for _, handler := range handlers {
-		defer handler()
-	}
-	err := t.err
-	if err != nil && !t.hasCatch {
-		panic(err)
+		handler()
 	}
 }
 
-type Err1 struct {
-	error
-}
-type Err2 struct {
-	error
+/*
+type MyError struct {
+	Message string
 }
 
-/*func main() {
+func (e MyError) Error() string {
+	return e.Message
+}
+
+func riskyOperation() error {
+	return MyError{"Something went wrong"}
+}
+
+func main() {
 	Try(func() {
-		fmt.Println("Try 1 error")
-		panic(Err1{error: errors.New("error1")})
-	}).Catch(Err1{}, func(err error) {
-		println("catch err1", err.Error())
-	}).Catch(Err2{}, func(err error) {
-		println("catch err2", err.Error())
+		xx := riskyOperation()
+		throw(xx)
 	}).CatchAll(func(err error) {
-		println("catch all")
+		fmt.Println("Caught a panic or an unspecified error:", err)
 	}).Finally(func() {
-		println("finally 1 done")
+		fmt.Println("Operation attempted")
 	})
 }
 */

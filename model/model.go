@@ -16,7 +16,7 @@ type UserBasic struct {
 	ClientIp      string
 	ClientPort    string
 	Salt          string
-	LoginTime     time.Time
+	LoginTime     time.Time `gorm:"column:login_in_time" json:"login_in_time"`
 	HeartBeatTime time.Time
 	LogOutTime    time.Time `gorm:"column:login_out_time" json:"login_out_time"`
 	DeviceInfo    string
