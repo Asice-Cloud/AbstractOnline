@@ -1,7 +1,5 @@
 package utils
 
-import "fmt"
-
 type TrieNode struct {
 	children    map[rune]*TrieNode
 	isEnd       bool
@@ -63,7 +61,7 @@ func hasRequire(nodePermissions, require []string) bool {
 	return true
 }
 
-func main() {
+/*func main() {
 	trie := NewTrie()
 	trie.Insert("api/user/create", []string{"admin", "read", "write"})
 	trie.Insert("api/user/delete", []string{"admin", "read", "delete"})
@@ -86,3 +84,4 @@ func main() {
 		fmt.Printf("Path: %s, Require: %v, Result: %v (Expect: %v)\n", tr.path, tr.require, result, tr.expect)
 	}
 }
+*/
