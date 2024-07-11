@@ -2,8 +2,9 @@ package router
 
 import (
 	"Chat/docs"
-	"Chat/middleware"
+	"Chat/middleware/auth"
 	"Chat/middleware/log"
+	"Chat/middleware/safe"
 	"Chat/utils"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -16,12 +17,14 @@ func RouterInit() {
 	router := gin.Default()
 
 	// middleware
-	router.Use(cors.New(middleware.CorsInit()))
+	router.Use(cors.New(auth.CorsInit()))
 	router.Use(gin.Logger())
 	router.Use(log.LoginMiddleware())
 	//set session
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
+	router.Use(log.GinLogger(), log.GinRecovery(true))
+	router.Use(safe.SetCSRFToken())
 
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"

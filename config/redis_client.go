@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"time"
 )
@@ -23,5 +22,4 @@ func InitRedis() {
 	if err != nil {
 		panic("failed to connect redis")
 	}
-	fmt.Println("Redis successfully init")
 }
