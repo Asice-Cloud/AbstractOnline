@@ -3,7 +3,7 @@
 ### structure :
 
 ```
-
+|-cache            //usual pages and query cache
 |-config           //project config   
 |-controller       //http operation in business logic,user and admin module
 |-docs             //swagger docs
@@ -30,7 +30,7 @@
 
 #### what will be added:
 
-msg quene, nginx, redis, token validator...  (distributed system frame?)
+msg quene, nginx, token validator...  (distributed system frame?)
 
 #### other more:
 
