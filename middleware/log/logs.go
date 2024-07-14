@@ -16,46 +16,56 @@ import (
 // GinLogger 接收gin框架默认的日志
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Make a copy of the context for the goroutine
+		cCp := c.Copy()
 		start := time.Now()
-		path := c.Request.URL.Path
-		query := c.Request.URL.RawQuery
-		c.Next()
 
-		cost := time.Since(start)
-		status := c.Writer.Status()
-		if status >= 200 && status < 400 {
-			zap.L().Info(path,
-				zap.String("method", c.Request.Method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", c.ClientIP()),
-				zap.String("user-agent", c.Request.UserAgent()),
-				zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-				zap.Duration("cost", cost),
-			)
-		} else if status >= 400 && status < 500 {
-			zap.L().Warn(path,
-				zap.String("method", c.Request.Method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", c.ClientIP()),
-				zap.String("user-agent", c.Request.UserAgent()),
-				zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-				zap.Duration("cost", cost),
-			)
-		} else {
-			zap.L().Error(path,
-				zap.String("method", c.Request.Method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", c.ClientIP()),
-				zap.String("user-agent", c.Request.UserAgent()),
-				zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-				zap.Duration("cost", cost),
-			)
-		}
+		// Use a goroutine for logging
+		go func() {
+			path := cCp.Request.URL.Path
+			query := cCp.Request.URL.RawQuery
+			status := cCp.Writer.Status()
+			cost := time.Since(start)
+
+			if status >= 200 && status < 400 {
+				zap.L().Info(path,
+					zap.String("method", cCp.Request.Method),
+					zap.String("path", path),
+					zap.String("query", query),
+					zap.String("ip", cCp.ClientIP()),
+					zap.String("user-agent", cCp.Request.UserAgent()),
+					zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+					zap.Duration("cost", cost),
+				)
+			} else if status >= 400 && status < 500 {
+				zap.L().Warn(path,
+					zap.String("method", cCp.Request.Method),
+					zap.String("path", path),
+					zap.String("query", query),
+					zap.String("ip", cCp.ClientIP()),
+					zap.String("user-agent", cCp.Request.UserAgent()),
+					zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+					zap.Duration("cost", cost),
+				)
+			} else {
+				zap.L().Error(path,
+					zap.String("method", cCp.Request.Method),
+					zap.String("path", path),
+					zap.String("query", query),
+					zap.String("ip", cCp.ClientIP()),
+					zap.String("user-agent", cCp.Request.UserAgent()),
+					zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+					zap.Duration("cost", cost),
+				)
+			}
+		}()
+
+		// Continue with the next middleware/handler
+		c.Next()
 	}
-} // GinRecovery recover掉项目可能出现的panic，并使用zap记录相关日志
+}
+
+// GinRecovery recover掉项目可能出现的panic，并使用zap记录相关日志
 func GinRecovery(stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
