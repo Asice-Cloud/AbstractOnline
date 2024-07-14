@@ -19,12 +19,13 @@ func RouterInit() {
 	// middleware
 	router.Use(cors.New(auth.CorsInit()))
 	router.Use(gin.Logger())
-	router.Use(log.LoginMiddleware())
+
 	//set session
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 	router.Use(log.GinLogger(), log.GinRecovery(true))
 	router.Use(safe.SetCSRFToken())
+	router.Use(safe.SanitizeInputMiddleware())
 
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"

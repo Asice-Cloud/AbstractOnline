@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	config.InitMode()
 	config.InitConfig()
 	config.InitMySQL()
 	config.InitRedis()

@@ -1,4 +1,6 @@
+app:
+  mode: release
 mysql:
   dsn: root:123456@tcp(localhost:3306)/usertest?charset=utf8mb4&parseTime=True&loc=Local
 log:
-  path: /log
+  path: ./log

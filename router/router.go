@@ -26,10 +26,10 @@ func Routers(router *gin.Engine) {
 		userRouter.POST("/searchuser", controller.SearchUser)
 	}
 
-	gitRouter := router.Group("/git")
+	v1 := router.Group("/v1")
 	{
-		gitRouter.GET("/login", controller.GitLogin)
-		gitRouter.GET("/callback", controller.GitCallBack)
+		v1.GET("/login", controller.GitLogin)
+		v1.GET("/callback", controller.GitCallBack)
 	}
 
 	//admin module

@@ -1,0 +1,1 @@
+{"level":"info","ts":1720938982.4722042,"caller":"log/logs.go:27","msg":"/index","method":"GET","path":"/index","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.40.0","errors":"","cost":0.0007239}

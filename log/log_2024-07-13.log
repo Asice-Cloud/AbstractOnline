@@ -1,0 +1,1 @@
+2024-07-13T22:50:27.217+0800	INFO	log/logs.go:26	/test/test	{"method": "GET", "path": "/test/test", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": "0s"}
