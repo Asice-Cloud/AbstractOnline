@@ -1,3 +1,0 @@
-{"level":"info","ts":1720938982.4722042,"caller":"log/logs.go:27","msg":"/index","method":"GET","path":"/index","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.40.0","errors":"","cost":0.0007239}
-{"level":"info","ts":1720941326.700091,"caller":"log/logs.go:31","msg":"/index","method":"GET","path":"/index","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.40.0","errors":"","cost":0}
-{"level":"warn","ts":1720941336.2202828,"caller":"log/logs.go:41","msg":"/indexd","method":"GET","path":"/indexd","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.40.0","errors":"","cost":0.0009167}

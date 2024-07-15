@@ -1,0 +1,9 @@
+{
+  "log_level": "debug",
+  "log_output": "./log",
+  "log_file": "app.log",
+  "log_max_size": 10000,
+  "time_format": "2006-01-02 15:04:05",
+  "log_format": "[:time] :level :message",
+  "compress": true
+}

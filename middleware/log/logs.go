@@ -22,13 +22,14 @@ func GinLogger() gin.HandlerFunc {
 
 		// Use a goroutine for logging
 		go func() {
+
 			path := cCp.Request.URL.Path
 			query := cCp.Request.URL.RawQuery
 			status := cCp.Writer.Status()
 			cost := time.Since(start)
 
 			if status >= 200 && status < 400 {
-				zap.L().Info(path,
+				config.Lg.Info(path,
 					zap.String("method", cCp.Request.Method),
 					zap.String("path", path),
 					zap.String("query", query),
@@ -38,7 +39,7 @@ func GinLogger() gin.HandlerFunc {
 					zap.Duration("cost", cost),
 				)
 			} else if status >= 400 && status < 500 {
-				zap.L().Warn(path,
+				config.Lg.Warn(path,
 					zap.String("method", cCp.Request.Method),
 					zap.String("path", path),
 					zap.String("query", query),
@@ -48,7 +49,7 @@ func GinLogger() gin.HandlerFunc {
 					zap.Duration("cost", cost),
 				)
 			} else {
-				zap.L().Error(path,
+				config.Lg.Error(path,
 					zap.String("method", cCp.Request.Method),
 					zap.String("path", path),
 					zap.String("query", query),
@@ -83,7 +84,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					config.Lg.Error(c.Request.URL.Path,
+					config.Lg.Fatal(c.Request.URL.Path,
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)
