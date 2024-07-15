@@ -5,3 +5,5 @@ YYYY-MM-DD HH:mm:ss	info	/index	{"method": "GET", "path": "/index", "query": "",
 2024-07-15 20:44:16	info	/index	{"method": "GET", "path": "/index", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
 2024-07-15 21:28:34	info	/index	{"method": "GET", "path": "/index", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
 2024-07-15 21:39:58	info	Time: [2024-07-15 21:39:58], Level: [INFO], Method: [GET], Path: [/index], Query: [], IP: [127.0.0.1], User-Agent: [PostmanRuntime/7.40.0], Errors: [], Cost: [0s]
+2024-07-15 21:53:16	info	/index	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
+2024-07-15 22:09:54	info	/index	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}

@@ -20,6 +20,8 @@ type Config struct {
 	LogMaxSize int    `json:"log_max_size"`
 	TimeFormat string `json:"time_format"`
 	LogFormat  string `json:"log_format"`
+	MaxBackups int    `json:"max_backups"`
+	MaxAge     int    `json:"max_age"`
 	Compress   bool   `json:"compress"`
 }
 
@@ -31,7 +33,10 @@ func loadConfig(filename string) (*Config, error) {
 	}
 
 	var config Config
-	json.Unmarshal(configFile, &config)
+	err = json.Unmarshal(configFile, &config)
+	if err != nil {
+		return nil, err
+	}
 	return &config, nil
 }
 
@@ -64,9 +69,11 @@ func InitLogger() {
 	core := zapcore.NewCore(
 		encoder,
 		zapcore.AddSync(&lumberjack.Logger{
-			Filename: filepath.Join(config.LogOutput, config.LogFile),
-			MaxSize:  config.LogMaxSize, // megabytes
-			Compress: config.Compress,
+			Filename:   filepath.Join(config.LogOutput, config.LogFile),
+			MaxBackups: config.MaxBackups,
+			MaxSize:    config.LogMaxSize, // megabytes
+			MaxAge:     config.MaxAge,     // days
+			Compress:   config.Compress,
 		}),
 		zap.NewAtomicLevelAt(parseLogLevel(config.LogLevel)),
 	)

@@ -31,7 +31,6 @@ func GinLogger() gin.HandlerFunc {
 			if status >= 200 && status < 400 {
 				config.Lg.Info(path,
 					zap.String("method", cCp.Request.Method),
-					zap.String("path", path),
 					zap.String("query", query),
 					zap.String("ip", cCp.ClientIP()),
 					zap.String("user-agent", cCp.Request.UserAgent()),
@@ -41,7 +40,6 @@ func GinLogger() gin.HandlerFunc {
 			} else if status >= 400 && status < 500 {
 				config.Lg.Warn(path,
 					zap.String("method", cCp.Request.Method),
-					zap.String("path", path),
 					zap.String("query", query),
 					zap.String("ip", cCp.ClientIP()),
 					zap.String("user-agent", cCp.Request.UserAgent()),
@@ -51,7 +49,6 @@ func GinLogger() gin.HandlerFunc {
 			} else {
 				config.Lg.Error(path,
 					zap.String("method", cCp.Request.Method),
-					zap.String("path", path),
 					zap.String("query", query),
 					zap.String("ip", cCp.ClientIP()),
 					zap.String("user-agent", cCp.Request.UserAgent()),
