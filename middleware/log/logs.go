@@ -61,10 +61,10 @@ func GinLogger() gin.HandlerFunc {
 					zap.String("path", path),
 					zap.String("method", method),
 					zap.Int("status", status),
-					zap.ByteString("requestBody", requestBody),
-					zap.ByteString("responseBody", responseBody),
 					zap.Any("requestHeaders", string(requestHeaders)),
+					zap.ByteString("requestBody", requestBody),
 					zap.Any("responseHeaders", responseHeaders),
+					zap.ByteString("responseBody", responseBody),
 				)
 			} else {
 				if status >= 200 && status < 400 {
