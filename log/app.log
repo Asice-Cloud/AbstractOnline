@@ -7,3 +7,10 @@ YYYY-MM-DD HH:mm:ss	info	/index	{"method": "GET", "path": "/index", "query": "",
 2024-07-15 21:39:58	info	Time: [2024-07-15 21:39:58], Level: [INFO], Method: [GET], Path: [/index], Query: [], IP: [127.0.0.1], User-Agent: [PostmanRuntime/7.40.0], Errors: [], Cost: [0s]
 2024-07-15 21:53:16	info	/index	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
 2024-07-15 22:09:54	info	/index	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
+2024-07-16 00:35:42	warn	//v1/error	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36", "errors": "", "cost": 0.0009571}
+2024-07-16 00:35:42	warn	/favicon.ico	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36", "errors": "", "cost": 0}
+2024-07-16 00:35:57	info	/v1/error	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36", "errors": "", "cost": 0}
+2024-07-16 00:35:57	error	Stderr	{"output": "error"}
+2024-07-16 11:44:02	warn	/v1/ping	{"method": "GET", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.40.0", "errors": "", "cost": 0}
+2024-07-16 11:53:06	debug	Debug Info	{"path": "/v1/ping", "method": "GET", "requestBody": "", "status": 404}
+2024-07-16 11:53:22	debug	Debug Info	{"path": "/index", "method": "GET", "requestBody": "", "status": 200}

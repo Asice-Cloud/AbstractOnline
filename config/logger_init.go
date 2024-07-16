@@ -3,9 +3,11 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -66,21 +68,53 @@ func InitLogger() {
 		encoder = zapcore.NewConsoleEncoder(encoderConfig)
 	}
 
-	core := zapcore.NewCore(
-		encoder,
-		zapcore.AddSync(&lumberjack.Logger{
-			Filename:   filepath.Join(config.LogOutput, config.LogFile),
-			MaxBackups: config.MaxBackups,
-			MaxSize:    config.LogMaxSize, // megabytes
-			MaxAge:     config.MaxAge,     // days
-			Compress:   config.Compress,
-		}),
-		zap.NewAtomicLevelAt(parseLogLevel(config.LogLevel)),
-	)
+	var core zapcore.Core
+	fileWriter := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   filepath.Join(config.LogOutput, config.LogFile),
+		MaxBackups: config.MaxBackups,
+		MaxSize:    config.LogMaxSize,
+		MaxAge:     config.MaxAge,
+		Compress:   config.Compress,
+	})
+
+	if gin.Mode() == gin.DebugMode {
+		consoleWriter := zapcore.Lock(os.Stdout)
+		multiWriter := zapcore.NewMultiWriteSyncer(fileWriter, consoleWriter)
+		core = zapcore.NewCore(encoder, multiWriter, zap.NewAtomicLevelAt(parseLogLevel(config.LogLevel)))
+	} else {
+		core = zapcore.NewCore(encoder, fileWriter, zap.NewAtomicLevelAt(parseLogLevel(config.LogLevel)))
+	}
 
 	logger := zap.New(core)
 	zap.ReplaceGlobals(logger)
+
 	Lg = logger
+
+	// Create a Pipe to capture stderr
+	readEnd, writeEnd, err := os.Pipe()
+	if err != nil {
+		panic(fmt.Sprintf("Failed to create pipe: %v", err))
+	}
+
+	// Redirect stderr to the write end of the pipe
+	os.Stderr = writeEnd
+	// Capture stderr output in a separate goroutine
+	go func() {
+		buffer := make([]byte, 1024)
+		for {
+			n, err := readEnd.Read(buffer)
+			if err != nil {
+				if err != io.EOF {
+					Lg.Error("Error reading from stderr pipe", zap.Error(err))
+				}
+				break
+			}
+			if n > 0 {
+				Lg.Error("Stderr", zap.ByteString("output", buffer[:n]))
+			}
+		}
+	}()
+
 }
 
 func parseLogLevel(level string) zapcore.Level {

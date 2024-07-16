@@ -3,9 +3,11 @@ package router
 import (
 	"Chat/controller"
 	"Chat/middleware/blockIP"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"os"
 )
 
 func Routers(router *gin.Engine) {
@@ -30,6 +32,12 @@ func Routers(router *gin.Engine) {
 	{
 		v1.GET("/login", controller.GitLogin)
 		v1.GET("/callback", controller.GitCallBack)
+		v1.GET("/error", func(context *gin.Context) {
+			context.JSON(500, gin.H{
+				"message": "error",
+			})
+			fmt.Fprintf(os.Stderr, "error")
+		})
 	}
 
 	//admin module
