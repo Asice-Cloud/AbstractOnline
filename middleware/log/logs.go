@@ -55,17 +55,16 @@ func GinLogger() gin.HandlerFunc {
 				requestBody, _ = ioutil.ReadAll(c.Request.Body)
 				// Replace the request body so it can be read again
 				cCp.Request.Body = ioutil.NopCloser(strings.NewReader(string(requestBody)))
-			}
-			if isDebugLoggingEnabled() {
+
 				requestHeaders, _ := httputil.DumpRequest(c.Request, false)
 				config.Lg.Debug("Debug Info",
 					zap.String("path", path),
 					zap.String("method", method),
+					zap.Int("status", status),
 					zap.ByteString("requestBody", requestBody),
 					zap.ByteString("responseBody", responseBody),
 					zap.Any("requestHeaders", string(requestHeaders)),
 					zap.Any("responseHeaders", responseHeaders),
-					zap.Int("status", status),
 				)
 			} else {
 				if status >= 200 && status < 400 {
