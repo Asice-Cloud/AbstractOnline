@@ -39,22 +39,22 @@ func WebSocketHandler(c *gin.Context) {
 		}
 		switch messageType {
 		case websocket.TextMessage:
-			fmt.Printf("处理文本消息, %s\n", string(p))
+			fmt.Printf("Received text message, %s\n", string(p))
 			ws.WriteMessage(websocket.TextMessage, p)
 			// c.Writer.Write(p)
 		case websocket.BinaryMessage:
-			fmt.Println("处理二进制消息")
+			fmt.Println("Received binary message")
 		case websocket.CloseMessage:
-			fmt.Println("关闭websocket连接")
+			fmt.Println("Closing websocket connection")
 			return
 		case websocket.PingMessage:
-			fmt.Println("处理ping消息")
+			fmt.Println("Dialing ping message")
 			ws.WriteMessage(websocket.PongMessage, []byte("ping"))
 		case websocket.PongMessage:
-			fmt.Println("处理pong消息")
+			fmt.Println("Dialing pong message")
 			ws.WriteMessage(websocket.PongMessage, []byte("pong"))
 		default:
-			fmt.Printf("未知消息类型: %d\n", messageType)
+			fmt.Printf("Unknows message: %d\n", messageType)
 			return
 		}
 	}
