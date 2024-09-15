@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -33,74 +33,76 @@ func (w responseBodyWriter) Write(b []byte) (int, error) {
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Make a copy of the context for the goroutine
-		cCp := c.Copy()
+		cCp := *c
 		start := time.Now()
 		w := &responseBodyWriter{body: &bytes.Buffer{}, ResponseWriter: c.Writer}
+		cCp.Writer = w
 
-		// Use a goroutine for logging
-		go func() {
-			cCp.Writer = w
-			status := cCp.Writer.Status()
-			path := cCp.Request.URL.Path
-			query := cCp.Request.URL.RawQuery
-			method := cCp.Request.Method
-			clientIP := cCp.ClientIP()
-			userAgent := cCp.Request.UserAgent()
-			cost := time.Since(start)
-			responseHeaders := cCp.Writer.Header()
-			responseBody := w.body.Bytes()
-
-			var requestBody []byte
-			if isDebugLoggingEnabled() {
-				requestBody, _ = ioutil.ReadAll(c.Request.Body)
-				// Replace the request body so it can be read again
-				cCp.Request.Body = ioutil.NopCloser(strings.NewReader(string(requestBody)))
-
-				requestHeaders, _ := httputil.DumpRequest(c.Request, false)
-				config.Lg.Debug("Debug Info",
-					zap.String("path", path),
-					zap.String("method", method),
-					zap.Int("status", status),
-					zap.Any("requestHeaders", string(requestHeaders)),
-					zap.ByteString("requestBody", requestBody),
-					zap.Any("responseHeaders", responseHeaders),
-					zap.ByteString("responseBody", responseBody),
-				)
-			} else {
-				if status >= 200 && status < 400 {
-					config.Lg.Info(path,
-						zap.String("method", cCp.Request.Method),
-						zap.String("query", query),
-						zap.String("ip", clientIP),
-						zap.String("user-agent", userAgent),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-						zap.Duration("cost", cost),
-					)
-				} else if status >= 400 && status < 500 {
-					config.Lg.Warn(path,
-						zap.String("method", cCp.Request.Method),
-						zap.String("query", query),
-						zap.String("ip", cCp.ClientIP()),
-						zap.String("user-agent", cCp.Request.UserAgent()),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-						zap.Duration("cost", cost),
-					)
-				} else {
-					config.Lg.Error(path,
-						zap.String("method", cCp.Request.Method),
-						zap.String("query", query),
-						zap.String("ip", cCp.ClientIP()),
-						zap.String("user-agent", cCp.Request.UserAgent()),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-						zap.Duration("cost", cost),
-					)
-				}
+		var requestBody []byte
+		if c.Request.Body != nil {
+			bodyBytes, err := io.ReadAll(c.Request.Body)
+			if err == nil {
+				requestBody = make([]byte, len(bodyBytes))
+				copy(requestBody, bodyBytes)
+				c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // Reset request body
 			}
 
-		}()
+			c.Next()
 
-		// Continue with the next middleware/handler
-		c.Next()
+			// Use a goroutine for logging
+			go func() {
+				status := cCp.Writer.Status()
+				path := cCp.Request.URL.Path
+				query := cCp.Request.URL.RawQuery
+				method := cCp.Request.Method
+				clientIP := cCp.ClientIP()
+				userAgent := cCp.Request.UserAgent()
+				cost := time.Since(start)
+				responseHeaders := cCp.Writer.Header()
+				responseBody := w.body.Bytes()
+				if isDebugLoggingEnabled() {
+					requestHeaders, _ := httputil.DumpRequest(c.Request, false)
+					config.Lg.Debug("Debug Info",
+						zap.String("path", path),
+						zap.String("method", method),
+						zap.Int("status", status),
+						zap.Any("requestHeaders", string(requestHeaders)),
+						zap.ByteString("requestBody", requestBody),
+						zap.Any("responseHeaders", responseHeaders),
+						zap.ByteString("responseBody", responseBody),
+					)
+				} else {
+					if status >= 200 && status < 400 {
+						config.Lg.Info(path,
+							zap.String("method", cCp.Request.Method),
+							zap.String("query", query),
+							zap.String("ip", clientIP),
+							zap.String("user-agent", userAgent),
+							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+							zap.Duration("cost", cost),
+						)
+					} else if status >= 400 && status < 500 {
+						config.Lg.Warn(path,
+							zap.String("method", cCp.Request.Method),
+							zap.String("query", query),
+							zap.String("ip", cCp.ClientIP()),
+							zap.String("user-agent", cCp.Request.UserAgent()),
+							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+							zap.Duration("cost", cost),
+						)
+					} else {
+						config.Lg.Error(path,
+							zap.String("method", cCp.Request.Method),
+							zap.String("query", query),
+							zap.String("ip", cCp.ClientIP()),
+							zap.String("user-agent", cCp.Request.UserAgent()),
+							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+							zap.Duration("cost", cost),
+						)
+					}
+				}
+			}()
+		}
 	}
 }
 

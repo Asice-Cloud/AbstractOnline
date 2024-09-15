@@ -7,6 +7,9 @@ require (
 	github.com/gin-contrib/cors v1.7.1
 	github.com/gin-contrib/sessions v1.0.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/gorilla/websocket v1.5.3
+	github.com/jaevor/go-nanoid v1.4.0
+	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
@@ -14,8 +17,11 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.3
+	go.uber.org/zap v1.27.0
 	golang.org/x/oauth2 v0.18.0
 	golang.org/x/time v0.5.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
+	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.8
 )
@@ -26,11 +32,6 @@ require (
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/sessions v1.2.2 // indirect
-	github.com/jaevor/go-nanoid v1.4.0 // indirect
-	github.com/matoous/go-nanoid v1.5.0 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.27 // indirect
-	go.uber.org/zap v1.27.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )
 
 require (
@@ -54,7 +55,6 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -80,7 +80,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
