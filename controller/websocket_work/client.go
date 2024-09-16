@@ -18,7 +18,7 @@ const (
 )
 
 type Client struct {
-	hub  *Hub
+	room *Room
 	conn *websocket.Conn
 	send chan []byte
 	Name string
@@ -34,7 +34,7 @@ var upgrader = websocket.Upgrader{
 
 func (cli *Client) read() {
 	defer func() {
-		cli.hub.unregister <- cli
+		cli.room.unregister <- cli
 		cli.conn.Close()
 	}()
 	cli.conn.SetReadLimit(max_message_size)
@@ -53,7 +53,7 @@ func (cli *Client) read() {
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, []byte{'\n'}, []byte{' '}, -1))
 		prefix := fmt.Sprintf("%s say %s", cli.Name, message)
-		cli.hub.broadcast <- []byte(prefix)
+		cli.room.broadcast <- []byte(prefix)
 	}
 }
 
@@ -93,25 +93,28 @@ func (cli *Client) write() {
 	}
 }
 
-func ServerWs(hub *Hub, ctx *gin.Context) {
+func ServerWs(hub *Room, ctx *gin.Context) {
 	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		config.Lg.Error(fmt.Sprintf("%v", err))
 		return
 	}
 
+	baseName := getRandomName()
+	uniqueName := getUniqueName(baseName)
+
 	client := &Client{
-		hub:  hub,
+		room: hub,
 		conn: conn,
 		send: make(chan []byte, 256),
-		Name: getRandomName(),
+		Name: uniqueName,
 	}
-	client.hub.register <- client
+	client.room.register <- client
 	welcome := fmt.Sprintf("welcome %s join the chat room", client.Name)
-	number := fmt.Sprintf("current number of people in the chat room is %d", len(client.hub.clients)+1)
+	number := fmt.Sprintf("current number of people in the chat room is %d", len(client.room.clients)+1)
 	go func() {
-		client.hub.broadcast <- []byte(welcome)
-		client.hub.broadcast <- []byte(number)
+		client.room.broadcast <- []byte(welcome)
+		client.room.broadcast <- []byte(number)
 	}()
 	go client.read()
 	go client.write()

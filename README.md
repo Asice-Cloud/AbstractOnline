@@ -6,6 +6,7 @@
 |-cache            //usual pages and query cache
 |-config           //project config   
 |-controller       //http operation in business logic,user and admin module
+|  └─websocket_work //websocket server and char room
 |-docs             //swagger docs
 |-logger           //record log by thread pool
 |-middleware       //middleware
@@ -26,15 +27,9 @@
 |-utils            //tool and mechanism ...
 ```
 
-![](structure.png)
-
 #### what will be added:
 
-msg quene, nginx, token validator...  (distributed system frame?)
-
-#### other more:
-
-Due to I am a student, I always delay to update by examination or other reasons.
+msg quene, nginx, token validator... 
 
 #### By the way:
 

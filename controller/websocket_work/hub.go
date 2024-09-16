@@ -1,21 +1,21 @@
 package websocket_work
 
-var Global_Hub *Hub
+var Global_Hub *Room
 
 func init() {
 	Global_Hub = New_hub()
 	go Global_Hub.Launch()
 }
 
-type Hub struct {
+type Room struct {
 	clients    map[*Client]bool
 	broadcast  chan []byte
 	register   chan *Client
 	unregister chan *Client
 }
 
-func New_hub() *Hub {
-	return &Hub{
+func New_hub() *Room {
+	return &Room{
 		broadcast:  make(chan []byte),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
@@ -23,7 +23,7 @@ func New_hub() *Hub {
 	}
 }
 
-func (h *Hub) Launch() {
+func (h *Room) Launch() {
 	for {
 		select {
 		case client := <-h.register:
