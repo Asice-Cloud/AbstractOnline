@@ -27,7 +27,8 @@ func Routers(router *gin.Engine) {
 		userRouter.DELETE("/logout", controller.Logout)
 		userRouter.POST("/searchuser", controller.SearchUser)
 
-		userRouter.GET("/ws", controller.WebSocketHandler)
+		userRouter.GET("/home", controller.Home)
+		userRouter.GET("/ws", controller.Ws)
 	}
 
 	v1 := router.Group("/v1")
