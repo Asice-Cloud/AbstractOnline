@@ -2,8 +2,9 @@ package balance
 
 import (
 	"Chat/config"
-	"github.com/gin-gonic/gin"
 	"net/http/httputil"
+
+	"github.com/gin-gonic/gin"
 )
 
 var serverPool config.ServerPool

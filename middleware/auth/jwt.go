@@ -4,6 +4,7 @@ import (
 	"Chat/controller"
 	"Chat/pkg"
 	"Chat/response"
+	"Chat/session"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -11,7 +12,7 @@ import (
 
 func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 	return func(c *gin.Context) {
-		authSession := controller.SessionGet(c, "admin")
+		authSession := session.SessionGet("user", c, "admin")
 		if authSession == nil {
 			response.RespErrorWithMsg(c, response.CodeInvalidToken, errors.New("empty token"))
 			c.Abort()
@@ -42,7 +43,7 @@ func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 
 func UserJwtAuthMiddleware() func(ctx *gin.Context) {
 	return func(c *gin.Context) {
-		authSession := controller.SessionGet(c, "user")
+		authSession := session.SessionGet("user", c, "user")
 		if authSession == nil {
 			response.RespErrorWithMsg(c, response.CodeInvalidToken, errors.New("empty token"))
 			c.Abort()

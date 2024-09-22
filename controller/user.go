@@ -4,6 +4,7 @@ import (
 	"Chat/model"
 	"Chat/response"
 	"Chat/service"
+	"Chat/session"
 	"Chat/utils"
 	"errors"
 	"fmt"
@@ -99,7 +100,7 @@ func UpdateUser(context *gin.Context) {
 	user.Phone = context.PostForm("phone")
 	user.Email = context.PostForm("email")
 
-	userSession := SessionGet(context, fmt.Sprintf("user_%d", user.ID))
+	userSession := session.SessionGet("user", context, fmt.Sprintf("user_%d", user.ID))
 	if userSession == nil {
 		response.RespError(context, response.CodeNotLogin)
 		return
@@ -127,7 +128,7 @@ func UpdateUser(context *gin.Context) {
 			AccessToken:  userData.AccessToken,
 			RefreshToken: userData.RefreshToken,
 		}
-		SessionUpdate(context, fmt.Sprintf("user_%d", user.ID), data)
+		session.SessionUpdate("user", context, fmt.Sprintf("user_%d", user.ID), data)
 		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", data))
 	}
 }
@@ -185,7 +186,7 @@ func Login(context *gin.Context) {
 		AccessToken:  user.AccessToken,
 		RefreshToken: user.RefreshToken,
 	}
-	SessionSet(context, fmt.Sprintf("user_%d", user.ID), userSession)
+	session.SessionSet("user", context, fmt.Sprintf("user_%d", user.ID), userSession)
 	response.RespSuccess(context, userSession)
 }
 
@@ -197,13 +198,13 @@ func Login(context *gin.Context) {
 // @router /user/logout [delete]
 func Logout(context *gin.Context) {
 	userID, _ := strconv.Atoi(context.Query("userID"))
-	userSession := SessionGet(context, fmt.Sprintf("user_%d", userID))
+	userSession := session.SessionGet("user", context, fmt.Sprintf("user_%d", userID))
 	if userSession == nil {
 		response.RespError(context, response.CodeNotLogin)
 		return
 	}
 	// Delete the session for the user
-	SessionDelete(context, fmt.Sprintf("user_%d", userID))
+	session.SessionDelete("user", context, fmt.Sprintf("user_%d", userID))
 	response.RespSuccess(context, "Successfully logout")
 }
 

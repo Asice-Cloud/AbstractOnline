@@ -5,11 +5,11 @@ import (
 	"Chat/middleware/auth"
 	"Chat/middleware/log"
 	"Chat/middleware/safe"
+	"Chat/session"
 	"Chat/utils"
 	"fmt"
+
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,8 +21,7 @@ func RouterInit() {
 	router.Use(gin.Logger())
 
 	//set session
-	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte("secret"))
-	router.Use(sessions.Sessions("mysession", store))
+	session.InitSession(router)
 	router.Use(log.GinLogger(), log.GinRecovery(true))
 	router.Use(safe.SetCSRFToken())
 	router.Use(safe.SanitizeInputMiddleware())

@@ -6,6 +6,7 @@ import (
 	"Chat/pkg"
 	"Chat/response"
 	"Chat/service"
+	"Chat/session"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -44,7 +45,7 @@ func AdminLogin(ctx *gin.Context) {
 			AccessToken:  atoken,
 			RefreshToken: rtoken,
 		}
-		SessionSet(ctx, "admin", admin)
+		session.SessionSet("admin", ctx, "admin", admin)
 		response.RespSuccess(ctx, admin)
 	} else {
 		response.RespSuccess(ctx, response.CodeInvalidPassword)
