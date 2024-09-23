@@ -1,4 +1,4 @@
-package controller
+package authorization
 
 import (
 	"encoding/json"

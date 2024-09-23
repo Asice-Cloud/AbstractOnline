@@ -2,6 +2,8 @@ package router
 
 import (
 	"Chat/controller"
+	"Chat/controller/authorization"
+	"Chat/controller/verification"
 	"Chat/middleware/blockIP"
 	"fmt"
 	"os"
@@ -28,14 +30,15 @@ func Routers(router *gin.Engine) {
 		userRouter.DELETE("/logout", controller.Logout)
 		userRouter.POST("/searchuser", controller.SearchUser)
 
+		userRouter.GET("/before", controller.Before)
 		userRouter.GET("/home", controller.Home)
 		userRouter.GET("/ws", controller.Ws)
 	}
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/login", controller.GitLogin)
-		v1.GET("/callback", controller.GitCallBack)
+		v1.GET("/login", authorization.GitLogin)
+		v1.GET("/callback", authorization.GitCallBack)
 		v1.GET("/error", func(context *gin.Context) {
 			context.JSON(500, gin.H{
 				"message": "error",
@@ -44,9 +47,9 @@ func Routers(router *gin.Engine) {
 		})
 
 		// 验证滑块验证码
-		v1.GET("background", controller.GetBackground)
-		v1.GET("slider", controller.Slider)
-		v1.POST("verify", controller.Verify)
+		v1.GET("background", verification.GetBackground)
+		v1.GET("slider", verification.Slider)
+		v1.POST("verify", verification.Verify)
 
 	}
 
