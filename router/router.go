@@ -4,10 +4,11 @@ import (
 	"Chat/controller"
 	"Chat/middleware/blockIP"
 	"fmt"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"os"
 )
 
 func Routers(router *gin.Engine) {
@@ -41,6 +42,12 @@ func Routers(router *gin.Engine) {
 			})
 			fmt.Fprintf(os.Stderr, "error")
 		})
+
+		// 验证滑块验证码
+		v1.GET("background", controller.GetBackground)
+		v1.GET("slider", controller.Slider)
+		v1.POST("verify", controller.Verify)
+
 	}
 
 	//admin module

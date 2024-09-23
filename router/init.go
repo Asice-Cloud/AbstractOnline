@@ -2,7 +2,6 @@ package router
 
 import (
 	"Chat/docs"
-	"Chat/middleware/auth"
 	"Chat/middleware/log"
 	"Chat/middleware/safe"
 	"Chat/session"
@@ -17,7 +16,8 @@ func RouterInit() {
 	router := gin.Default()
 
 	// middleware
-	router.Use(cors.New(auth.CorsInit()))
+	//router.Use(cors.New(auth.CorsInit()))
+	router.Use(cors.Default())
 	router.Use(gin.Logger())
 
 	//set session
