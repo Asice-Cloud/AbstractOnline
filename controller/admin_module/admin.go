@@ -1,4 +1,4 @@
-package controller
+package admin_module
 
 import (
 	"Chat/config"
@@ -29,7 +29,7 @@ type AdminSession struct {
 // @param name query string false "Name"
 // @param password query string false "Password"
 // @Success	200 {string} json{"code","message"}
-// @router /admin/login [get]
+// @router /admin_module/login [get]
 func AdminLogin(ctx *gin.Context) {
 	name := ctx.Query("name")
 	password := ctx.Query("password")
@@ -56,7 +56,7 @@ func AdminLogin(ctx *gin.Context) {
 // Admin Block IP Retrieval
 // @Tags Admin
 // @Success	200 {string} json{"code","blockip"}
-// @router /admin/retrievalblockip [get]
+// @router /admin-module/retrievalblockip [get]
 func BlockIPRetrieval(ctx *gin.Context) {
 	// get the blocked IP
 	blockIp, err := RetrievalBlockIP(ctx)
@@ -72,7 +72,7 @@ func BlockIPRetrieval(ctx *gin.Context) {
 // Admin Block IP Remove
 // @Tags Admin
 // @Success	200 {string} json{"code","message"}
-// @router /admin/deleteblockip [delete]
+// @router /admin_module/deleteblockip [delete]
 func BlockIPRemove(ctx *gin.Context) {
 	ip := ctx.Query("ip")
 	err := RemoveBlockIP(ctx, ip)
@@ -100,7 +100,7 @@ func RemoveBlockIP(ctx *gin.Context, ip string) error {
 // @Summary Find all users
 // @Tags Admin
 // @Success	200	{string} json{"code","message"}
-// @router /admin/userlist [get]
+// @router /admin_module/userlist [get]
 func GetUserList(context *gin.Context) {
 	var data []model.UserBasic
 	data = service.GetUserList()

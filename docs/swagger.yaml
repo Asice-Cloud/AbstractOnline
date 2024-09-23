@@ -1,7 +1,16 @@
 info:
   contact: {}
 paths:
-  /admin/deleteblockip:
+  /admin-module/retrievalblockip:
+    get:
+      responses:
+        "200":
+          description: code","blockip"}
+          schema:
+            type: string
+      tags:
+      - Admin
+  /admin_module/deleteblockip:
     delete:
       responses:
         "200":
@@ -10,7 +19,7 @@ paths:
             type: string
       tags:
       - Admin
-  /admin/login:
+  /admin_module/login:
     get:
       parameters:
       - description: Name
@@ -28,16 +37,7 @@ paths:
             type: string
       tags:
       - Admin
-  /admin/retrievalblockip:
-    get:
-      responses:
-        "200":
-          description: code","blockip"}
-          schema:
-            type: string
-      tags:
-      - Admin
-  /admin/userlist:
+  /admin_module/userlist:
     get:
       responses:
         "200":
@@ -47,7 +47,7 @@ paths:
       summary: Find all users
       tags:
       - Admin
-  /git/login:
+  /authorization/login:
     get:
       responses:
         "200":
@@ -65,7 +65,7 @@ paths:
             type: string
       tags:
       - home page
-  /user/adduser:
+  /user_module/adduser:
     get:
       parameters:
       - description: Name
@@ -88,7 +88,16 @@ paths:
       summary: Add user
       tags:
       - UserModule
-  /user/deluser:
+  /user_module/before:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - home page
+  /user_module/deluser:
     delete:
       parameters:
       - description: id
@@ -103,7 +112,16 @@ paths:
       summary: Delete user
       tags:
       - UserModule
-  /user/index:
+  /user_module/home:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - home page
+  /user_module/index:
     get:
       responses:
         "200":
@@ -112,7 +130,7 @@ paths:
             type: string
       tags:
       - User Home
-  /user/login:
+  /user_module/login:
     get:
       parameters:
       - description: Name
@@ -131,7 +149,7 @@ paths:
       summary: user login
       tags:
       - UserModule
-  /user/logout:
+  /user_module/logout:
     delete:
       parameters:
       - description: userID
@@ -146,7 +164,7 @@ paths:
       summary: user login
       tags:
       - UserModule
-  /user/searchuser:
+  /user_module/searchuser:
     post:
       parameters:
       - description: Name
@@ -165,7 +183,7 @@ paths:
       summary: Find user
       tags:
       - UserModule
-  /user/updateuser:
+  /user_module/updateuser:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -198,4 +216,13 @@ paths:
       summary: Update user
       tags:
       - UserModule
+  /user_module/ws:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - home page
 swagger: "2.0"

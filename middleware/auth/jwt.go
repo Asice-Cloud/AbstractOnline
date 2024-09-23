@@ -1,7 +1,8 @@
 package auth
 
 import (
-	"Chat/controller"
+	"Chat/controller/admin_module"
+	"Chat/controller/user_module"
 	"Chat/pkg"
 	"Chat/response"
 	"Chat/session"
@@ -18,7 +19,7 @@ func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		authToken, ok := authSession.(controller.AdminSession)
+		authToken, ok := authSession.(admin_module.AdminSession)
 		if !ok {
 			response.RespError(c, response.CodeInvalidToken)
 			c.Abort()
@@ -49,7 +50,7 @@ func UserJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		authToken, ok := authSession.(controller.UserSession)
+		authToken, ok := authSession.(user_module.UserSession)
 		if !ok {
 			response.RespError(c, response.CodeInvalidToken)
 			c.Abort()

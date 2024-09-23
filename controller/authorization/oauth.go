@@ -68,7 +68,7 @@ func generateCode() (string, error) {
 //
 //		@Tags			GitHub Oauth
 //		@Success		200	{string} {"UserName":userResp.Name,"AvatarURL":userResp.AvatarURL,}
-//		@router			/v1/login [get]
+//		@router			/authorization/login [get]
 func GitLogin(context *gin.Context) {
 	// init oauth config
 	InitialConfig()

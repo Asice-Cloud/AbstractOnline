@@ -4,7 +4,22 @@
         "contact": {}
     },
     "paths": {
-        "/admin/deleteblockip": {
+        "/admin-module/retrievalblockip": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"blockip\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin_module/deleteblockip": {
             "delete": {
                 "tags": [
                     "Admin"
@@ -19,7 +34,7 @@
                 }
             }
         },
-        "/admin/login": {
+        "/admin_module/login": {
             "get": {
                 "tags": [
                     "Admin"
@@ -48,22 +63,7 @@
                 }
             }
         },
-        "/admin/retrievalblockip": {
-            "get": {
-                "tags": [
-                    "Admin"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "code\",\"blockip\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/userlist": {
+        "/admin_module/userlist": {
             "get": {
                 "tags": [
                     "Admin"
@@ -79,7 +79,7 @@
                 }
             }
         },
-        "/git/login": {
+        "/authorization/login": {
             "get": {
                 "tags": [
                     "GitHub Oauth"
@@ -109,7 +109,7 @@
                 }
             }
         },
-        "/user/adduser": {
+        "/user_module/adduser": {
             "get": {
                 "tags": [
                     "UserModule"
@@ -145,7 +145,22 @@
                 }
             }
         },
-        "/user/deluser": {
+        "/user_module/before": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/deluser": {
             "delete": {
                 "tags": [
                     "UserModule"
@@ -169,7 +184,22 @@
                 }
             }
         },
-        "/user/index": {
+        "/user_module/home": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/index": {
             "get": {
                 "tags": [
                     "User Home"
@@ -184,7 +214,7 @@
                 }
             }
         },
-        "/user/login": {
+        "/user_module/login": {
             "get": {
                 "tags": [
                     "UserModule"
@@ -214,7 +244,7 @@
                 }
             }
         },
-        "/user/logout": {
+        "/user_module/logout": {
             "delete": {
                 "tags": [
                     "UserModule"
@@ -238,7 +268,7 @@
                 }
             }
         },
-        "/user/searchuser": {
+        "/user_module/searchuser": {
             "post": {
                 "tags": [
                     "UserModule"
@@ -268,7 +298,7 @@
                 }
             }
         },
-        "/user/updateuser": {
+        "/user_module/updateuser": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -312,6 +342,21 @@
                 "responses": {
                     "200": {
                         "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/ws": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }

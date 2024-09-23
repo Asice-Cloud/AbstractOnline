@@ -1,4 +1,4 @@
-package controller
+package user_module
 
 import (
 	"Chat/model"
@@ -24,7 +24,7 @@ type UserSession struct {
 // User Home Page
 // @Tags User Home
 // @Success	200	{string} welcome, user
-// @router /user/index [get]
+// @router /user_module/index [get]
 func Index(context *gin.Context) {
 	response.RespSuccess(context, "Welcome")
 }
@@ -36,7 +36,7 @@ func Index(context *gin.Context) {
 // @param password query string false "Password"
 // @param repassword query string false "Twice Password"
 // @Success	200	{string} json{"code","message"}
-// @router /user/adduser [get]
+// @router /user_module/adduser [get]
 func CreateUser(context *gin.Context) {
 	user := model.UserBasic{}
 	user.Name = context.Query("name")
@@ -63,7 +63,7 @@ func CreateUser(context *gin.Context) {
 // @Tags UserModule
 // @param id query string false "id"
 // @Success	200	{string} json{"code","message"}
-// @router /user/deluser [delete]
+// @router /user_module/deluser [delete]
 func DeleteUser(context *gin.Context) {
 	var user model.UserBasic
 	id, err := strconv.Atoi(context.Query("id"))
@@ -90,7 +90,7 @@ func DeleteUser(context *gin.Context) {
 // @Param phone formData string false "phone"
 // @Param email formData string false "email"
 // @Success	200	{string} json{"code","message"}
-// @router /user/updateuser [post]
+// @router /user_module/updateuser [post]
 func UpdateUser(context *gin.Context) {
 	var user model.UserBasic
 	id, _ := strconv.Atoi(context.PostForm("id"))
@@ -139,7 +139,7 @@ func UpdateUser(context *gin.Context) {
 // @param name query string false "Name"
 // @param password query string false "Password"
 // @Success	200	{string} json{"code","message"}
-// @router /user/searchuser [post]
+// @router /user_module/searchuser [post]
 func SearchUser(context *gin.Context) {
 	var data model.UserBasic
 	name := context.Query("name")
@@ -166,7 +166,7 @@ func SearchUser(context *gin.Context) {
 // @param name query string false "Name"
 // @param password query string false "Password"
 // @Success	200	{string} json{"code","message"}
-// @router /user/login [get]
+// @router /user_module/login [get]
 func Login(context *gin.Context) {
 	name := context.Query("name")
 	password := context.Query("password")
@@ -195,7 +195,7 @@ func Login(context *gin.Context) {
 // @Tags UserModule
 // @param userID query string false "userID"
 // @Success	200	{string} json{"code","message"}
-// @router /user/logout [delete]
+// @router /user_module/logout [delete]
 func Logout(context *gin.Context) {
 	userID, _ := strconv.Atoi(context.Query("userID"))
 	userSession := session.SessionGet("user", context, fmt.Sprintf("user_%d", userID))
@@ -218,7 +218,7 @@ func Logout(context *gin.Context) {
 // @Param object query models.ParamPostList false "查询参数"
 // @Security ApiKeyAuth
 // @Success 200 {object} _ResponsePostList
-// @Router /refresh_token [GET]
+// @Router /user_module/refresh_token [GET]
 func RefreshTokenHandler(c *gin.Context) {
 	rt := c.Query("refresh_token")
 	// 客户端携带Token有三种方式 1.放在请求头 2.放在请求体 3.放在URI
