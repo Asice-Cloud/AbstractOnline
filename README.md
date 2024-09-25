@@ -1,7 +1,8 @@
 ## Personal exercise project, an online chat system by Go
-
+## Now I'm trying to build this project to a chat framework
 ### structure :
 
+English | [简体中文](README_CN.md)
 ```
 |-cache            //usual pages and query cache
 |-config           //project config   
