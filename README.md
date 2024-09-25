@@ -13,7 +13,6 @@ English | [简体中文](README_CN.md)
 |  └─verification  //verification of user, when logining or entering chat room...
 |  └─websocket_work //websocket server and char room
 |-docs             //swagger docs
-|-logger           //record log by thread pool
 |-middleware       //middleware
 |  └─auth          //authorization ...
 |  └─balance       //LoadBalance
@@ -26,7 +25,7 @@ English | [简体中文](README_CN.md)
 |-router           //router 
 |-service          //model operation in business service
 |-session          //operations of multiply session: stroe, set, get ...
-|-static           //webpage front-end 
+|-static           //resource of front-end 
 |  └─img           //img
 |  └─css           //css
 |  └─js            //js

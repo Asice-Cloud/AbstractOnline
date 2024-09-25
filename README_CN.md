@@ -12,7 +12,6 @@
 |  └─verification  //验证模块，图形验证码等内容
 |  └─websocket_work //基于websocket进行的聊天室的搭建
 |-docs             //swagger 文档
-|-logger           //日志部分
 |-middleware       //中间件
 |  └─auth          //验证中间件
 |  └─balance       //负载均衡中间件

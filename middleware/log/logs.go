@@ -3,6 +3,7 @@ package log
 import (
 	"Chat/config"
 	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"io"
@@ -13,6 +14,14 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
+)
+
+var (
+	dc = config.Colors["debug"]
+	ic = config.Colors["info"]
+	wc = config.Colors["warn"]
+	ec = config.Colors["error"]
+	rc = config.Colors["reset"]
 )
 
 func isDebugLoggingEnabled() bool {
@@ -62,13 +71,13 @@ func GinLogger() gin.HandlerFunc {
 				responseBody := w.body.Bytes()
 				if isDebugLoggingEnabled() {
 					requestHeaders, _ := httputil.DumpRequest(c.Request, false)
-					config.Lg.Debug("Debug Info",
+					config.Lg.Debug("Debug info:",
 						zap.String("path", path),
-						zap.String("method", method),
+						zap.String(fmt.Sprintf("%s%s%s", dc, "method", rc), method),
 						zap.Int("status", status),
 						zap.Any("requestHeaders", string(requestHeaders)),
 						zap.ByteString("requestBody", requestBody),
-						zap.Any("responseHeaders", responseHeaders),
+						zap.Any("resonseHeaders", responseHeaders),
 						zap.ByteString("responseBody", responseBody),
 					)
 				} else {

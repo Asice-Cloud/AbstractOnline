@@ -14,6 +14,14 @@ import (
 )
 
 var Lg *zap.Logger
+var Colors = map[string]string{
+	"debug": "\033[1;34m", // Blue
+	"info":  "\033[1;32m", // Green
+	"warn":  "\033[1;33m", // Yellow
+	"error": "\033[1;31m", // Red
+	"fatal": "\033[1;35m", // Purple
+	"reset": "\033[0m",    // Reset
+}
 
 type Config struct {
 	LogLevel   string `json:"log_level"`
@@ -57,6 +65,7 @@ func InitLogger() {
 	}
 
 	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeLevel = colorLevelEncoder
 	// Convert the TimeFormat from log.json to Go's time format
 	goTimeFormat := "2006-01-02 15:04:05" // This should match your desired format
 	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(goTimeFormat)
@@ -85,6 +94,8 @@ func InitLogger() {
 		core = zapcore.NewCore(encoder, fileWriter, zap.NewAtomicLevelAt(parseLogLevel(config.LogLevel)))
 	}
 
+	// Register the hook
+	core = zapcore.RegisterHooks(core, msg_hook)
 	logger := zap.New(core)
 	zap.ReplaceGlobals(logger)
 
@@ -130,4 +141,21 @@ func parseLogLevel(level string) zapcore.Level {
 	default:
 		return zap.InfoLevel
 	}
+}
+
+func colorLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
+	var color string
+	switch level {
+	case zapcore.DebugLevel:
+		color = Colors["debug"]
+	case zapcore.InfoLevel:
+		color = Colors["info"]
+	case zapcore.WarnLevel:
+		color = Colors["warn"]
+	case zapcore.ErrorLevel:
+		color = Colors["error"]
+	default:
+		color = Colors["reset"]
+	}
+	enc.AppendString(fmt.Sprintf("%s%s\033[0m", color, level.CapitalString()))
 }
