@@ -3,9 +3,11 @@ package cache
 import (
 	"Chat/config"
 	"context"
-	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 	"time"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // SetCache, set cache for common pages or queries
 func SetCache(key string, value interface{}, expiry time.Duration) error {

@@ -1,9 +1,9 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -12,6 +12,8 @@ import (
 	"os"
 	"path/filepath"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var Lg *zap.Logger
 var Colors = map[string]string{

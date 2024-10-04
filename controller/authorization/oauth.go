@@ -1,7 +1,7 @@
 package authorization
 
 import (
-	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	json        = jsoniter.ConfigCompatibleWithStandardLibrary
 	state       = "Gauss curvature"
 	OauthConfig *oauth2.Config
 )
@@ -31,7 +32,7 @@ func InitialConfig() {
 	OauthConfig = &oauth2.Config{
 		ClientID:     "Iv1.d7d4884211aa1791",
 		ClientSecret: "00b199cff9f402f4daa0b97ce698719044b71951",
-		RedirectURL:  "http://127.0.0.1:9999/git/callback",
+		RedirectURL:  "http://127.0.0.1:9999/av/callback",
 		Scopes:       []string{"read:user"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://github.com/login/oauth/authorize",
