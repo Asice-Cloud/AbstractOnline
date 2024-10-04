@@ -36,6 +36,8 @@ func (cli *Client) read() {
 	defer func() {
 		cli.room.unregister <- cli
 		cli.conn.Close()
+		leaveMessage := fmt.Sprintf("%s has left the chat room", cli.Name)
+		cli.room.broadcast <- []byte(leaveMessage)
 	}()
 	cli.conn.SetReadLimit(max_message_size)
 	cli.conn.SetReadDeadline(time.Now().Add(pong_wait))
