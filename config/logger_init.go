@@ -95,7 +95,7 @@ func InitLogger() {
 	}
 
 	// Register the hook
-	core = zapcore.RegisterHooks(core, msg_hook)
+	//core = zapcore.RegisterHooks(core, msg_hook)
 	logger := zap.New(core)
 	zap.ReplaceGlobals(logger)
 
