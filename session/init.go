@@ -6,10 +6,10 @@ import (
 )
 
 func InitSession(r *gin.Engine) {
-	sessionNames := []string{"user", "admin"}
 	//store session in:
 	//redis(default)
 	//cookie
 	store := inRedis()
-	r.Use(sessions.SessionsMany(sessionNames, store))
+	r.Use(sessions.SessionsMany(GetAllSession(), store))
+	RegisterAll(Table{})
 }

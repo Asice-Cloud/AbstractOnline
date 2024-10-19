@@ -13,13 +13,6 @@ import (
 	"strconv"
 )
 
-type UserSession struct {
-	UserID       int
-	UserName     string
-	AccessToken  string
-	RefreshToken string
-}
-
 // Index
 // User Home Page
 // @Tags User Home
@@ -122,7 +115,7 @@ func UpdateUser(context *gin.Context) {
 		}
 		// Update the session for the user
 		userData := rep.(model.UserBasic)
-		data := UserSession{
+		data := session.UserSession{
 			UserID:       int(userData.ID),
 			UserName:     userData.Name,
 			AccessToken:  userData.AccessToken,
@@ -180,7 +173,7 @@ func Login(context *gin.Context) {
 		response.RespError(context, response.CodeInvalidToken)
 	}
 	// Set the session for the user
-	userSession := UserSession{
+	userSession := session.UserSession{
 		UserID:       int(user.ID),
 		UserName:     user.Name,
 		AccessToken:  user.AccessToken,

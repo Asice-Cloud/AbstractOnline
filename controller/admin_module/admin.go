@@ -16,13 +16,6 @@ var (
 	mu sync.Mutex
 )
 
-type AdminSession struct {
-	ID           int
-	AdminName    string
-	AccessToken  string
-	RefreshToken string
-}
-
 // AdminLogin
 // Admin Login
 // @Tags Admin
@@ -39,7 +32,7 @@ func AdminLogin(ctx *gin.Context) {
 			response.RespErrorWithMsg(ctx, response.CodeInvalidToken, errors.New("could not generate token"))
 			return
 		}
-		admin := AdminSession{
+		admin := session.AdminSession{
 			ID:           0,
 			AdminName:    name,
 			AccessToken:  atoken,
