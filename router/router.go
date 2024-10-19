@@ -6,7 +6,6 @@ import (
 	"Chat/controller/authorization"
 	"Chat/controller/user_module"
 	"Chat/controller/verification"
-	"Chat/middleware/blockIP"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -18,7 +17,7 @@ func Routers(router *gin.Engine) {
 	router.GET("/index", controller.Welcome)
 
 	userRouter := router.Group("/user")
-	userRouter.Use(blockIP.BlockIPMiddleware)
+	//userRouter.Use(blockIP.BlockIPMiddleware)
 	//userRouter.Use(auth.UserJwtAuthMiddleware())
 	{
 		userRouter.GET("/login", user_module.Login)

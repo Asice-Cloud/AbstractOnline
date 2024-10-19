@@ -38,7 +38,6 @@ func (w responseBodyWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-// GinLogger 接收gin框架默认的日志
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Make a copy of the context for the goroutine
@@ -55,63 +54,62 @@ func GinLogger() gin.HandlerFunc {
 				copy(requestBody, bodyBytes)
 				c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // Reset request body
 			}
+		}
+		c.Next()
+		// Use a goroutine for logging
+		go func() {
+			status := cCp.Writer.Status()
+			path := cCp.Request.URL.Path
+			query := cCp.Request.URL.RawQuery
+			method := cCp.Request.Method
+			clientIP := cCp.ClientIP()
+			userAgent := cCp.Request.UserAgent()
+			cost := time.Since(start)
+			responseHeaders := cCp.Writer.Header()
+			responseBody := w.body.Bytes()
 
-			c.Next()
-
-			// Use a goroutine for logging
-			go func() {
-				status := cCp.Writer.Status()
-				path := cCp.Request.URL.Path
-				query := cCp.Request.URL.RawQuery
-				method := cCp.Request.Method
-				clientIP := cCp.ClientIP()
-				userAgent := cCp.Request.UserAgent()
-				cost := time.Since(start)
-				responseHeaders := cCp.Writer.Header()
-				responseBody := w.body.Bytes()
-				if isDebugLoggingEnabled() {
-					requestHeaders, _ := httputil.DumpRequest(c.Request, false)
-					config.Lg.Debug("Debug info:",
-						zap.String("path", path),
-						zap.String(fmt.Sprintf("%s%s%s", dc, "method", rc), method),
-						zap.Int("status", status),
-						zap.Any("requestHeaders", string(requestHeaders)),
-						zap.ByteString("requestBody", requestBody),
-						zap.Any("resonseHeaders", responseHeaders),
-						zap.ByteString("responseBody", responseBody),
+			if isDebugLoggingEnabled() {
+				requestHeaders, _ := httputil.DumpRequest(cCp.Request, false)
+				config.Lg.Debug("Debug info:",
+					zap.String("path", path),
+					zap.String(fmt.Sprintf("%s%s%s", dc, "method", rc), method),
+					zap.Int("status", status),
+					zap.Any("requestHeaders", string(requestHeaders)),
+					zap.ByteString("requestBody", requestBody),
+					zap.Any("responseHeaders", responseHeaders),
+					zap.ByteString("responseBody", responseBody),
+				)
+			} else {
+				if status >= 200 && status < 400 {
+					config.Lg.Info(path,
+						zap.String("method", cCp.Request.Method),
+						zap.String("query", query),
+						zap.String("ip", clientIP),
+						zap.String("user-agent", userAgent),
+						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.Duration("cost", cost),
+					)
+				} else if status >= 400 && status < 500 {
+					config.Lg.Warn(path,
+						zap.String("method", cCp.Request.Method),
+						zap.String("query", query),
+						zap.String("ip", cCp.ClientIP()),
+						zap.String("user-agent", cCp.Request.UserAgent()),
+						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.Duration("cost", cost),
 					)
 				} else {
-					if status >= 200 && status < 400 {
-						config.Lg.Info(path,
-							zap.String("method", cCp.Request.Method),
-							zap.String("query", query),
-							zap.String("ip", clientIP),
-							zap.String("user-agent", userAgent),
-							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-							zap.Duration("cost", cost),
-						)
-					} else if status >= 400 && status < 500 {
-						config.Lg.Warn(path,
-							zap.String("method", cCp.Request.Method),
-							zap.String("query", query),
-							zap.String("ip", cCp.ClientIP()),
-							zap.String("user-agent", cCp.Request.UserAgent()),
-							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-							zap.Duration("cost", cost),
-						)
-					} else {
-						config.Lg.Error(path,
-							zap.String("method", cCp.Request.Method),
-							zap.String("query", query),
-							zap.String("ip", cCp.ClientIP()),
-							zap.String("user-agent", cCp.Request.UserAgent()),
-							zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
-							zap.Duration("cost", cost),
-						)
-					}
+					config.Lg.Error(path,
+						zap.String("method", cCp.Request.Method),
+						zap.String("query", query),
+						zap.String("ip", cCp.ClientIP()),
+						zap.String("user-agent", cCp.Request.UserAgent()),
+						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.Duration("cost", cost),
+					)
 				}
-			}()
-		}
+			}
+		}()
 	}
 }
 
