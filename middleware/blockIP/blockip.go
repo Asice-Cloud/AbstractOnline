@@ -1,7 +1,7 @@
 package blockIP
 
 import (
-	"Chat/config"
+	"Abstract/config"
 	"context"
 	"sync"
 	"time"

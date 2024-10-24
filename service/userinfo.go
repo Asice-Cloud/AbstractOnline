@@ -1,10 +1,10 @@
 package service
 
 import (
-	"Chat/config"
-	"Chat/model"
-	"Chat/pkg"
-	"Chat/utils"
+	"Abstract/config"
+	"Abstract/model"
+	"Abstract/pkg"
+	"Abstract/utils"
 	"fmt"
 	"github.com/jaevor/go-nanoid"
 	"gorm.io/gorm/clause"

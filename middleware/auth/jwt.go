@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"Chat/pkg"
-	"Chat/response"
-	"Chat/session"
+	"Abstract/pkg"
+	"Abstract/response"
+	"Abstract/session"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"

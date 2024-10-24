@@ -1,12 +1,12 @@
 package router
 
 import (
-	"Chat/docs"
-	"Chat/middleware/auth"
-	"Chat/middleware/log"
-	"Chat/middleware/safe"
-	"Chat/session"
-	"Chat/utils"
+	"Abstract/docs"
+	"Abstract/middleware/auth"
+	"Abstract/middleware/log"
+	"Abstract/middleware/safe"
+	"Abstract/session"
+	"Abstract/utils"
 	"fmt"
 	"github.com/gin-contrib/cors"
 

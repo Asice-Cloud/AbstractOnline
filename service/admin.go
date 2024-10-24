@@ -1,8 +1,8 @@
 package service
 
 import (
-	"Chat/config"
-	"Chat/model"
+	"Abstract/config"
+	"Abstract/model"
 )
 
 // Search all user

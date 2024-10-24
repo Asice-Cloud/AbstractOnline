@@ -1,7 +1,7 @@
 package config
 
 import (
-	"Chat/model"
+	"Abstract/model"
 	"fmt"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"

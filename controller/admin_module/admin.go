@@ -1,12 +1,12 @@
 package admin_module
 
 import (
-	"Chat/config"
-	"Chat/model"
-	"Chat/pkg"
-	"Chat/response"
-	"Chat/service"
-	"Chat/session"
+	"Abstract/config"
+	"Abstract/model"
+	"Abstract/pkg"
+	"Abstract/response"
+	"Abstract/service"
+	"Abstract/session"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"sync"

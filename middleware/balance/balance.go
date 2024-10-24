@@ -1,7 +1,7 @@
 package balance
 
 import (
-	"Chat/config"
+	"Abstract/config"
 	"net/http/httputil"
 
 	"github.com/gin-gonic/gin"

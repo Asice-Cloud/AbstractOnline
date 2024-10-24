@@ -29,7 +29,7 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 		jwt.StandardClaims{ // 7 official sequence in JWT
 			ExpiresAt: time.Now().Add(
 				time.Duration(viper.GetInt("auth.jwt_expire")) * time.Hour).Unix(), // expire time
-			Issuer: "CHATSYSTEM", // register
+			Issuer: "AbstractSYSTEM", // register
 		},
 	}
 	// 加密并获得完整的编码后的字符串token
@@ -38,7 +38,7 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 	// refresh token 不需要存任何自定义数据
 	rToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Second * 30).Unix(), // 过期时间
-		Issuer:    "CHATSYSYEM",                            // 签发人
+		Issuer:    "AbstractSYSYEM",                        // 签发人
 	}).SignedString(mySecret)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
 	return

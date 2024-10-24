@@ -1,7 +1,7 @@
 package websocket_work
 
 import (
-	"Chat/config"
+	"Abstract/config"
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"

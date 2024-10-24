@@ -1,11 +1,11 @@
 package user_module
 
 import (
-	"Chat/model"
-	"Chat/response"
-	"Chat/service"
-	"Chat/session"
-	"Chat/utils"
+	"Abstract/model"
+	"Abstract/response"
+	"Abstract/service"
+	"Abstract/session"
+	"Abstract/utils"
 	"errors"
 	"fmt"
 	"github.com/asaskevich/govalidator"
@@ -61,8 +61,8 @@ func DeleteUser(context *gin.Context) {
 	var user model.UserBasic
 	id, err := strconv.Atoi(context.Query("id"))
 	if err != nil {
-		return
 		response.RespErrorWithMsg(context, response.CodeInvalidParams, errors.New("please input a valid number"))
+		return
 	}
 	user.ID = uint(id)
 	err = service.DeleteUser(user)

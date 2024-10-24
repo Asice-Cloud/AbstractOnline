@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"Chat/config"
+	"Abstract/config"
 	"context"
 	jsoniter "github.com/json-iterator/go"
 	"time"

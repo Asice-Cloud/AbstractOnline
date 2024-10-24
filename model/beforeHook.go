@@ -1,7 +1,7 @@
 package model
 
 import (
-	"Chat/pkg"
+	"Abstract/pkg"
 	"errors"
 	"gorm.io/gorm"
 	"strconv"

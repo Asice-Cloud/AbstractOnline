@@ -1,4 +1,4 @@
-module Chat
+module Abstract
 
 go 1.22.0
 

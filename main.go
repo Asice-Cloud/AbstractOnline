@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Chat/config"
-	"Chat/router"
+	"Abstract/config"
+	"Abstract/router"
 )
 
 func main() {

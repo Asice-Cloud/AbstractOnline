@@ -1,7 +1,7 @@
 package user_module
 
 import (
-	"Chat/controller/websocket_work"
+	"Abstract/controller/websocket_work"
 	"github.com/gin-gonic/gin"
 )
 
