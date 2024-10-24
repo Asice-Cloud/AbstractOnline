@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func InitRedis() {
+func initRedis() {
 	// init redis config:
 	Rdb = redis.NewClient(
 		&redis.Options{

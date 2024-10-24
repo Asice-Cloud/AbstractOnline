@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func InitMySQL() {
+func initMySQL() {
 	// customize SQL log
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),

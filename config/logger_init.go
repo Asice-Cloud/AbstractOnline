@@ -52,7 +52,7 @@ func loadConfig(filename string) (*Config, error) {
 	return &config, nil
 }
 
-func InitLogger() {
+func initLogger() {
 	config, err := loadConfig("log.json")
 	if err != nil {
 		panic(fmt.Sprintf("Could not load config: %v", err))

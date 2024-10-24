@@ -13,7 +13,7 @@ var (
 	Rdb *redis.Client
 )
 
-func InitConfig() {
+func initConfig() {
 	viper.SetConfigName("app")
 	viper.AddConfigPath("config")
 	err := viper.ReadInConfig()
@@ -22,4 +22,7 @@ func InitConfig() {
 	}
 	fmt.Println("config app", viper.Get("app"))
 	fmt.Println("config mysql", viper.Get("mysql"))
+	initLogger()
+	initMySQL()
+	initRedis()
 }
