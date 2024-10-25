@@ -1,7 +1,7 @@
 package user_module
 
 import (
-	ww "Abstract/controller/websocket_work"
+	"Abstract/websocket_work"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,5 +18,5 @@ func Home(c *gin.Context) {
 // @Success	200	{string} welcome
 // @router	/user_module/ws [get]
 func Ws(c *gin.Context) {
-	ww.ServerWs(ww.Global_Hub, c)
+	websocket_work.ServerWs(websocket_work.Global_Hub, c)
 }

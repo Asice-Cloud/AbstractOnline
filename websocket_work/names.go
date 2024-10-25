@@ -23,6 +23,7 @@ var names = []string{
 	"园神凛祢",
 	"万由理",
 	"我简直就是五河士道本人",
+	"隐藏角色伊藤诚",
 }
 
 var nameCount = make(map[string]int)
