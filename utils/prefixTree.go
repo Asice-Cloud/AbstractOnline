@@ -1,4 +1,4 @@
-package pkg
+package utils
 
 // prefix tree node
 type TrieNode struct {

@@ -3,10 +3,10 @@ package admin_module
 import (
 	"Abstract/config"
 	"Abstract/model"
-	"Abstract/pkg"
 	"Abstract/response"
 	"Abstract/service"
 	"Abstract/session"
+	"Abstract/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -27,7 +27,7 @@ func AdminLogin(ctx *gin.Context) {
 	name := ctx.Query("name")
 	password := ctx.Query("password")
 	if name == "admin" && password == "admin" {
-		atoken, rtoken, err := pkg.GenToken(0, "admin")
+		atoken, rtoken, err := utils.GenToken(0, "admin")
 		if err != nil {
 			response.RespErrorWithMsg(ctx, response.CodeInvalidToken, errors.New("could not generate token"))
 			return

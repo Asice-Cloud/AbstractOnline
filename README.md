@@ -2,7 +2,6 @@
 ## Now I'm trying to build this project to a chat framework
 ### structure :
 
-English | [简体中文](README_CN.md)
 ```
 |-cache            //usual pages and query cache
 |-config           //project config   
@@ -11,7 +10,6 @@ English | [简体中文](README_CN.md)
 |  └─authorization //some authorization operation
 |  └─user_module   //handle user operation
 |  └─verification  //verification of user, when logining or entering chat room...
-|  └─websocket_work //websocket server and char room
 |-docs             //swagger docs
 |-middleware       //middleware
 |  └─auth          //authorization ...
@@ -20,9 +18,9 @@ English | [简体中文](README_CN.md)
 |  └─log           //middleware of logger
 |  └─safe          //defense of csrf, xss, sql injection...
 |-model            //database model, hook
-|-pkg              //designs for service: snowflake, jwt
 |-response         //customize response information
 |-router           //router 
+|-server           //designs for service: snowflake, jwt
 |-service          //model operation in business service
 |-session          //operations of multiply session: stroe, set, get ...
 |-static           //resource of front-end 
@@ -31,6 +29,7 @@ English | [简体中文](README_CN.md)
 |  └─js            //js
 |-template         //html template
 |-utils            //tool and mechanism ...
+|-websocket_work   //websocket server and char room
 ```
 
 #### what will be added:

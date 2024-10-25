@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"Abstract/pkg"
 	"Abstract/response"
 	"Abstract/session"
+	"Abstract/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -23,7 +23,7 @@ func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		mc, err := pkg.ParseToken(authToken.AccessToken)
+		mc, err := utils.ParseToken(authToken.AccessToken)
 		if err != nil {
 			log.Println(err)
 			response.RespError(c, response.CodeInvalidToken)
@@ -54,7 +54,7 @@ func UserJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		_, err := pkg.ParseToken(authToken.AccessToken)
+		_, err := utils.ParseToken(authToken.AccessToken)
 		if err != nil {
 			log.Println(err)
 			response.RespError(c, response.CodeInvalidToken)
