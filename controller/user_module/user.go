@@ -122,7 +122,7 @@ func UpdateUser(context *gin.Context) {
 			RefreshToken: userData.RefreshToken,
 		}
 		session.SessionUpdate("user", context, fmt.Sprintf("user_%d", user.ID), data)
-		response.RespSuccess(context, fmt.Sprintf("Successfully update user,ID: %d", data))
+		response.RespSuccess(context, fmt.Sprintf("%s Update successfully!", user.Name))
 	}
 }
 
