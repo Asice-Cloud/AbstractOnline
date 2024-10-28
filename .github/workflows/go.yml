@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -17,6 +17,7 @@ jobs:
         image: redis
         ports:
           - 6379:6379
+        options: --sysctl vm.overcommit_memory=1
 
     steps:
     - name: Checkout repository
@@ -25,7 +26,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.23'
+        go-version: '1.16'
 
     - name: Install dependencies
       run: go mod download
