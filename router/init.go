@@ -7,6 +7,7 @@ import (
 	"Chat/middleware/safe"
 	"Chat/utils"
 	"fmt"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
@@ -26,12 +27,12 @@ func RouterInit() {
 	router.Use(log.GinLogger(), log.GinRecovery(true))
 	router.Use(safe.SetCSRFToken())
 	router.Use(safe.SanitizeInputMiddleware())
-
+	addr := "0.0.0.0:8088"
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "My API"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
-	docs.SwaggerInfo.Host = "127.0.0.1:9999"
+	docs.SwaggerInfo.Host = addr
 	docs.SwaggerInfo.BasePath = ""
 
 	router.LoadHTMLGlob("template/*")
@@ -40,7 +41,7 @@ func RouterInit() {
 	Routers(router)
 
 	utils.Try(func() {
-		err := router.Run(":9999")
+		err := router.Run(addr)
 		if err != nil {
 			utils.Throw(err)
 		}

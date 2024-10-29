@@ -5,8 +5,9 @@ import (
 	"Chat/pkg"
 	"Chat/response"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
@@ -30,7 +31,15 @@ func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		if mc.UserID != 0 && mc.Username != "admin" {
+		username, err1 := mc.GetUserName()
+		userID, err2 := mc.GetUserID()
+		if err1 != nil || err2 != nil {
+			log.Println(err)
+			response.RespError(c, response.CodeInvalidToken)
+			c.Abort()
+			return
+		}
+		if userID != 0 && username != "admin" {
 			response.RespError(c, response.CodeInvalidToken)
 			c.Abort()
 			return
