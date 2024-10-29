@@ -14,10 +14,10 @@ type UserSession struct {
 }
 
 type AdminSession struct {
-	ID           int
-	AdminName    string
-	AccessToken  string
-	RefreshToken string
+	ID        int
+	AdminName string
+	//AccessToken  string
+	//RefreshToken string
 }
 
 type VisitorSession struct {

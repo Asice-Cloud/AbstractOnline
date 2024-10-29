@@ -116,10 +116,10 @@ func UpdateUser(context *gin.Context) {
 		// Update the session for the user
 		userData := rep.(model.UserBasic)
 		data := session.UserSession{
-			UserID:       int(userData.ID),
-			UserName:     userData.Name,
-			AccessToken:  userData.AccessToken,
-			RefreshToken: userData.RefreshToken,
+			UserID:   int(userData.ID),
+			UserName: userData.Name,
+			//AccessToken:  userData.AccessToken,
+			//RefreshToken: userData.RefreshToken,
 		}
 		session.SessionUpdate("user", context, fmt.Sprintf("user_%d", user.ID), data)
 		response.RespSuccess(context, fmt.Sprintf("%s Update successfully!", user.Name))
@@ -174,10 +174,10 @@ func Login(context *gin.Context) {
 	}
 	// Set the session for the user
 	userSession := session.UserSession{
-		UserID:       int(user.ID),
-		UserName:     user.Name,
-		AccessToken:  user.AccessToken,
-		RefreshToken: user.RefreshToken,
+		UserID:   int(user.ID),
+		UserName: user.Name,
+		//AccessToken:  user.AccessToken,
+		//RefreshToken: user.RefreshToken,
 	}
 	session.SessionSet("user", context, fmt.Sprintf("user_%d", user.ID), userSession)
 	response.RespSuccess(context, userSession)

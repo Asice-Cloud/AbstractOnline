@@ -6,7 +6,6 @@ import (
 	"Abstract/response"
 	"Abstract/service"
 	"Abstract/session"
-	"Abstract/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -27,16 +26,16 @@ func AdminLogin(ctx *gin.Context) {
 	name := ctx.Query("name")
 	password := ctx.Query("password")
 	if name == "admin" && password == "admin" {
-		atoken, rtoken, err := utils.GenToken(0, "admin")
-		if err != nil {
-			response.RespErrorWithMsg(ctx, response.CodeInvalidToken, errors.New("could not generate token"))
-			return
-		}
+		//atoken, rtoken, err := utils.GenToken(0, "admin")
+		//if err != nil {
+		//	response.RespErrorWithMsg(ctx, response.CodeInvalidToken, errors.New("could not generate token"))
+		//	return
+		//}
 		admin := session.AdminSession{
-			ID:           0,
-			AdminName:    name,
-			AccessToken:  atoken,
-			RefreshToken: rtoken,
+			ID:        0,
+			AdminName: name,
+			//AccessToken:  atoken,
+			//RefreshToken: rtoken,
 		}
 		session.SessionSet("admin", ctx, "admin", admin)
 		response.RespSuccess(ctx, admin)
