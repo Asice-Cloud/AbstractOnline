@@ -6,6 +6,7 @@ import (
 	az "Abstract/controller/authorization"
 	um "Abstract/controller/user_module"
 	vc "Abstract/controller/verification"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

@@ -7,17 +7,15 @@ type Table struct {
 }
 
 type UserSession struct {
-	UserID       int
-	UserName     string
-	AccessToken  string
-	RefreshToken string
+	UserID      int
+	UserName    string
+	AccessToken string
 }
 
 type AdminSession struct {
-	ID        int
-	AdminName string
-	//AccessToken  string
-	//RefreshToken string
+	ID          int
+	AdminName   string
+	AccessToken string
 }
 
 type VisitorSession struct {

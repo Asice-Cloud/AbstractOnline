@@ -116,10 +116,9 @@ func UpdateUser(context *gin.Context) {
 		// Update the session for the user
 		userData := rep.(model.UserBasic)
 		data := session.UserSession{
-			UserID:   int(userData.ID),
-			UserName: userData.Name,
-			//AccessToken:  userData.AccessToken,
-			//RefreshToken: userData.RefreshToken,
+			UserID:      int(userData.ID),
+			UserName:    userData.Name,
+			AccessToken: userData.AccessToken,
 		}
 		session.SessionUpdate("user", context, fmt.Sprintf("user_%d", user.ID), data)
 		response.RespSuccess(context, fmt.Sprintf("%s Update successfully!", user.Name))
