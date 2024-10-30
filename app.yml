@@ -1,4 +1,8 @@
 app:
   mode: debug
 mysql:
+<<<<<<< HEAD
   dsn: root:123456@tcp(localhost:3306)/usertest?charset=utf8mb4&parseTime=True&loc=Local
+=======
+  dsn: root:root@tcp(localhost:3306)/usertest?charset=utf8mb4&parseTime=True&loc=Local
+>>>>>>> cabeaea9e4b402bfccd2935e92e244faee9a86da

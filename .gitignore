@@ -5,6 +5,7 @@
 .idea
 *.iml
 out
+bin
 gen
 tmp
 log

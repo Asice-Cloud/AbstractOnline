@@ -1,7 +1,7 @@
 package model
 
 import (
-	"Chat/pkg"
+	"Abstract/server"
 	"errors"
 	"gorm.io/gorm"
 	"strconv"
@@ -24,7 +24,7 @@ func (u *UserBasic) OptimisticLock(tx *gorm.DB) (err error) {
 		return errors.New("data has been updated by another transaction")
 	}
 
-	snowflake, _ := pkg.NewSnowflake(1, 1)
+	snowflake, _ := server.NewSnowflake(1, 1)
 	newUUID, _ := snowflake.NextID()
 	u.UUID = strconv.FormatInt(newUUID, 10)
 

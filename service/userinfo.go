@@ -1,10 +1,9 @@
 package service
 
 import (
-	"Chat/config"
-	"Chat/model"
-	"Chat/pkg"
-	"Chat/utils"
+	"Abstract/config"
+	"Abstract/model"
+	"Abstract/utils"
 	"fmt"
 	"github.com/jaevor/go-nanoid"
 	"gorm.io/gorm/clause"
@@ -64,9 +63,9 @@ func Login(name string, password string) (rep interface{}, err error) {
 		return nil, result.Error
 	}
 	// Generate JWT token
-	atoken, rtoken, err := pkg.GenToken(uint64(exist_data.ID), name)
-	exist_data.AccessToken = atoken
-	exist_data.RefreshToken = rtoken
+	//atoken, rtoken, err := utils.GenToken(uint64(exist_data.ID), name)
+	//exist_data.AccessToken = atoken
+	//exist_data.RefreshToken = rtoken
 	return exist_data, nil
 }
 
@@ -109,13 +108,9 @@ func UpdateUser(user model.UserBasic) (rep interface{}, err error) {
 		tx.Rollback()
 		return nil, result.Error
 	}
-	aToken, rToken, err := pkg.GenToken(uint64(exist.ID), exist.Name)
-	if err != nil {
-		tx.Rollback()
-		return nil, err
-	}
+
 	tx.Commit()
-	exist.AccessToken = aToken
-	exist.RefreshToken = rToken
+	//exist.AccessToken = aToken
+	//exist.RefreshToken = rToken
 	return exist, nil
 }

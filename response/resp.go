@@ -17,7 +17,7 @@ func RespError(ctx *gin.Context, code ReCode) {
 		Message: code.Msg(),
 		Data:    nil,
 	}
-	ctx.JSON(http.StatusOK, re)
+	ctx.JSON(http.StatusBadRequest, re)
 }
 
 func RespErrorWithMsg(ctx *gin.Context, code ReCode, data interface{}) {
@@ -26,7 +26,7 @@ func RespErrorWithMsg(ctx *gin.Context, code ReCode, data interface{}) {
 		Message: code.Msg(),
 		Data:    data,
 	}
-	ctx.JSON(http.StatusOK, re)
+	ctx.JSON(http.StatusBadRequest, re)
 }
 
 func RespSuccess(ctx *gin.Context, data interface{}) {

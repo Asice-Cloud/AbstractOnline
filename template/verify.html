@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>滑动验证码</title>
+    <style>
+        #captcha-container {
+            position: relative;
+            width: 1800px;
+            height: 900px;
+            background: url('http://localhost:9999/av/background') no-repeat;
+        }
+        #slider {
+            position: absolute;
+            top: 100px;
+            width: 100px;
+            height: 100px;
+            background: url('http://localhost:9999/av/slider') no-repeat;
+            cursor: pointer;
+        }
+        #message{
+            position:absolute;
+            top: 10px;
+            left:10px;
+            font-size: 20px;
+            color :red;
+        }
+    </style>
+</head>
+<body>
+<div id="captcha-container">
+    <div id="slider"></div>
+    <div id="message"></div>
+</div>
+<script>
+    const slider = document.getElementById('slider');
+    const message = document.getElementById('message');
+    let isDragging = false;
+    let startX;
+
+    slider.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - slider.offsetLeft;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            let moveX = e.clientX - startX;
+            if (moveX < 0) moveX = 0;
+            if (moveX > 1700) moveX = 1700; // 1800 - 100 (container width - slider width)
+            slider.style.left = moveX + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            const sliderPosition = slider.offsetLeft;
+            console.log(`Slider position: ${sliderPosition}`); // Add logging
+
+            // Send request to server for verification
+            fetch('http://localhost:9999/av/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ slider_position: sliderPosition })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Add logging
+                    if (data.success) {
+                        if (confirm('验证通过，您可以进入聊天室')) {
+                            window.location.href = 'http://127.0.0.1:9999/user/home';
+                        }
+                    } else {
+                       //show fail message in a text rather alert
+                        message.textContent = '验证失败，请重试';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,13 +1,14 @@
 package router
 
 import (
-	"Chat/controller"
-	"Chat/middleware/blockIP"
-	"fmt"
+	"Abstract/controller"
+	am "Abstract/controller/admin_module"
+	az "Abstract/controller/authorization"
+	um "Abstract/controller/user_module"
+	vc "Abstract/controller/verification"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"os"
 )
 
 func Routers(router *gin.Engine) {
@@ -16,42 +17,41 @@ func Routers(router *gin.Engine) {
 	router.GET("/index", controller.Welcome)
 
 	userRouter := router.Group("/user")
-	userRouter.Use(blockIP.BlockIPMiddleware)
-	//userRouter.Use(auth.UserJwtAuthMiddleware())
+	//userRouter.Use(blockIP.BlockIPMiddleware)
 	{
-		userRouter.GET("/login", controller.Login)
-		userRouter.GET("/index", controller.Index)
-		userRouter.GET("/adduser", controller.CreateUser)
-		userRouter.DELETE("/deluser", controller.DeleteUser)
-		userRouter.POST("/updateuser", controller.UpdateUser)
-		userRouter.DELETE("/logout", controller.Logout)
-		userRouter.POST("/searchuser", controller.SearchUser)
+		userRouter.GET("/login", um.Login)
+		userRouter.GET("/index", um.Index)
+		userRouter.GET("/adduser", um.CreateUser)
+		userRouter.DELETE("/deluser", um.DeleteUser)
+		userRouter.POST("/updateuser", um.UpdateUser)
+		userRouter.DELETE("/logout", um.Logout)
+		userRouter.POST("/searchuser", um.SearchUser)
 
-		userRouter.GET("/home", controller.Home)
-		userRouter.GET("/ws", controller.Ws)
+		userRouter.GET("/before", um.Before)
+		userRouter.GET("/home", um.Home)
+		userRouter.GET("/ws", um.Ws)
 	}
 
-	v1 := router.Group("/v1")
+	av := router.Group("/av")
 	{
-		v1.GET("/login", controller.GitLogin)
-		v1.GET("/callback", controller.GitCallBack)
-		v1.GET("/error", func(context *gin.Context) {
-			context.JSON(500, gin.H{
-				"message": "error",
-			})
-			fmt.Fprintf(os.Stderr, "error")
-		})
+		//Github Oauth
+		av.GET("/login", az.GitLogin)
+		av.GET("/callback", az.GitCallBack)
+
+		// 验证滑块验证码
+		av.GET("background", vc.GetBackground)
+		av.GET("slider", vc.Slider)
+		av.POST("verify", vc.Verify)
 	}
 
 	//admin module
 	adminRouter := router.Group("/admin")
 
-	adminRouter.GET("/login", controller.AdminLogin)
+	adminRouter.GET("/login", am.AdminLogin)
 
-	//adminRouter.Use(auth.AdminJwtAuthMiddleware())
 	{
-		adminRouter.GET("/userlist", controller.GetUserList)
-		adminRouter.GET("/retrievalblockip", controller.BlockIPRetrieval)
-		adminRouter.DELETE("/deleteblockip", controller.BlockIPRemove)
+		adminRouter.GET("/userlist", am.GetUserList)
+		adminRouter.GET("/retrievalblockip", am.BlockIPRetrieval)
+		adminRouter.DELETE("/deleteblockip", am.BlockIPRemove)
 	}
 }

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"Chat/model"
+	"Abstract/model"
 	"fmt"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func InitMySQL() {
+func initMySQL() {
 	// customize SQL log
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),

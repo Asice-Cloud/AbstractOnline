@@ -15,7 +15,22 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/deleteblockip": {
+        "/admin-module/retrievalblockip": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"blockip\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin_module/deleteblockip": {
             "delete": {
                 "tags": [
                     "Admin"
@@ -30,7 +45,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/login": {
+        "/admin_module/login": {
             "get": {
                 "tags": [
                     "Admin"
@@ -59,22 +74,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/retrievalblockip": {
-            "get": {
-                "tags": [
-                    "Admin"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "code\",\"blockip\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/userlist": {
+        "/admin_module/userlist": {
             "get": {
                 "tags": [
                     "Admin"
@@ -90,7 +90,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/git/login": {
+        "/authorization/login": {
             "get": {
                 "tags": [
                     "GitHub Oauth"
@@ -120,7 +120,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/adduser": {
+        "/user_module/adduser": {
             "get": {
                 "tags": [
                     "UserModule"
@@ -156,7 +156,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/deluser": {
+        "/user_module/before": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/deluser": {
             "delete": {
                 "tags": [
                     "UserModule"
@@ -180,7 +195,22 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/index": {
+        "/user_module/home": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/index": {
             "get": {
                 "tags": [
                     "User Home"
@@ -195,7 +225,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/login": {
+        "/user_module/login": {
             "get": {
                 "tags": [
                     "UserModule"
@@ -225,7 +255,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/logout": {
+        "/user_module/logout": {
             "delete": {
                 "tags": [
                     "UserModule"
@@ -249,7 +279,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/searchuser": {
+        "/user_module/searchuser": {
             "post": {
                 "tags": [
                     "UserModule"
@@ -279,7 +309,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/updateuser": {
+        "/user_module/updateuser": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -323,6 +353,21 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user_module/ws": {
+            "get": {
+                "tags": [
+                    "home page"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }

@@ -1,8 +1,8 @@
 package blockIP
 
 import (
-	"Chat/config"
-	"Chat/response"
+	"Abstract/config"
+	"Abstract/response"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
