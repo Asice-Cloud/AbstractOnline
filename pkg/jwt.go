@@ -13,24 +13,48 @@ const TokenExpireDuration = time.Hour * 2
 
 var commonIssuer, commonSub = "CHATSYSTEM", "CHATONLINE"
 
-type ClaimsFunc interface {
-	jwt.Claims
-	GetUserID() (int, error)
-	GetUserName() (string error)
-}
-
+// 把人逼急了只会手动实现一遍Claims
 type Claims struct {
-	jwt.Claims
-	userName string
-	userID   int
+	Issuer     string
+	IssuedAt   time.Time
+	Audience   []string
+	Subject    string
+	ExpireTime time.Time
+	Username   string
+	UserID     uint64
+	NotBefore  time.Time
 }
 
-func (c Claims) GetUserID() (int, error) {
-	return c.userID, nil
+func (m Claims) GetExpirationTime() (*jwt.NumericDate, error) {
+	return &jwt.NumericDate{m.ExpireTime}, nil
+}
+
+func (m Claims) GetIssuedAt() (*jwt.NumericDate, error) {
+	return &jwt.NumericDate{m.IssuedAt}, nil
+}
+
+func (m Claims) GetNotBefore() (*jwt.NumericDate, error) {
+	return &jwt.NumericDate{m.NotBefore}, nil
+}
+
+func (m Claims) GetIssuer() (string, error) {
+	return m.Issuer, nil
+}
+
+func (m Claims) GetSubject() (string, error) {
+	return m.Subject, nil
+}
+
+func (m Claims) GetAudience() (jwt.ClaimStrings, error) {
+	return m.Audience, nil
+}
+
+func (c Claims) GetUserID() (uint64, error) {
+	return c.UserID, nil
 }
 
 func (c Claims) GetUserName() (string, error) {
-	return c.userName, nil
+	return c.Username, nil
 }
 
 // 本来不想写，但是用多了还是要写
@@ -39,18 +63,21 @@ func KeyFunc(_ *jwt.Token) (interface{}, error) {
 }
 
 func GenToken(userID uint64, username string) (aToken, rToken string, err error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"iss": commonIssuer,
-		"aud": username,
-		"sub": commonSub,
-		"exp": time.Now().Add(TokenExpireDuration).Unix(),
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, Claims{
+		Issuer:     commonIssuer,
+		IssuedAt:   time.Now(),
+		Subject:    commonSub,
+		ExpireTime: time.Now().Add(TokenExpireDuration),
+		Username:   username,
+		UserID:     userID,
+		NotBefore:  time.Now(),
 	})
 	aToken, _ = token.SignedString(mySecret)
 
-	rt := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"iss": commonIssuer,
-		"sub": commonSub,
-		"exp": time.Now().Add(30 * time.Minute).Unix(),
+	rt := jwt.NewWithClaims(jwt.SigningMethodES256, Claims{
+		Issuer:     commonIssuer,
+		Subject:    commonSub,
+		ExpireTime: time.Now().Add(30 * time.Minute),
 	})
 	rToken, err = rt.SignedString(mySecret)
 	return

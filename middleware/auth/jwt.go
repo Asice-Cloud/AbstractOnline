@@ -31,15 +31,7 @@ func AdminJwtAuthMiddleware() func(ctx *gin.Context) {
 			c.Abort()
 			return
 		}
-		username, err1 := mc.GetUserName()
-		userID, err2 := mc.GetUserID()
-		if err1 != nil || err2 != nil {
-			log.Println(err)
-			response.RespError(c, response.CodeInvalidToken)
-			c.Abort()
-			return
-		}
-		if userID != 0 && username != "admin" {
+		if mc.UserID != 0 && mc.Username != "admin" {
 			response.RespError(c, response.CodeInvalidToken)
 			c.Abort()
 			return
