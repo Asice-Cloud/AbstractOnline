@@ -5,10 +5,11 @@ import (
 	"Abstract/model"
 	"Abstract/utils"
 	"fmt"
-	"github.com/jaevor/go-nanoid"
-	"gorm.io/gorm/clause"
 	"log"
 	"math/rand"
+
+	"github.com/jaevor/go-nanoid"
+	"gorm.io/gorm/clause"
 )
 
 // search user
