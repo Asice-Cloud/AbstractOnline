@@ -52,7 +52,6 @@ func RouterInit() {
 		}
 		go func() {
 			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatalf("listen: %s \n", err)
 				utils.Throw(err)
 			}
 		}()
