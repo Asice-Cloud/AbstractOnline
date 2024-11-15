@@ -3,12 +3,18 @@ package router
 import (
 	"Abstract/docs"
 	"Abstract/middleware/auth"
-	"Abstract/middleware/log"
+	logger "Abstract/middleware/log"
 	"Abstract/middleware/safe"
 	"Abstract/session"
 	"Abstract/utils"
+	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +29,7 @@ func RouterInit() {
 
 	//set session
 	session.InitSession(router)
-	router.Use(log.GinLogger(), log.GinRecovery(true))
+	router.Use(logger.GinLogger(), logger.GinRecovery(true))
 	router.Use(safe.SetCSRFToken())
 	router.Use(safe.SanitizeInputMiddleware())
 
@@ -40,12 +46,30 @@ func RouterInit() {
 	Routers(router)
 
 	utils.Try(func() {
-		err := router.Run(":9999")
-		if err != nil {
-			utils.Throw(err)
+		srv := http.Server{
+			Addr:    ":9999",
+			Handler: router,
 		}
+		go func() {
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s \n", err)
+				utils.Throw(err)
+			}
+		}()
+		// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, os.Interrupt)
+		<-quit
+		log.Println("Shutdown Server ...")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Fatal("Server Shutdown:", err)
+		}
+		log.Println("Server exiting")
 	}).CatchAll(func(err error) {
-		fmt.Printf("Caught: %v\n", err)
+		log.Fatalf("Caught: %v\n", err)
 	}).Finally(func() {
 		fmt.Println("finally")
 	})
