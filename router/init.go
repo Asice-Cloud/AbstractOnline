@@ -1,7 +1,6 @@
 package router
 
 import (
-	"Abstract/docs"
 	"Abstract/middleware/auth"
 	logger "Abstract/middleware/log"
 	"Abstract/middleware/safe"
@@ -32,14 +31,6 @@ func RouterInit() {
 	router.Use(logger.GinLogger(), logger.GinRecovery(true))
 	router.Use(safe.SetCSRFToken())
 	router.Use(safe.SanitizeInputMiddleware())
-
-	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "My API"
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
-	docs.SwaggerInfo.Host = "127.0.0.1:9999"
-	docs.SwaggerInfo.BasePath = ""
-
 	router.LoadHTMLGlob("template/*")
 	router.Static("/static", "./static")
 
