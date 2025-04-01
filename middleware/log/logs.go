@@ -70,7 +70,7 @@ func GinLogger() gin.HandlerFunc {
 
 			if isDebugLoggingEnabled() {
 				requestHeaders, _ := httputil.DumpRequest(cCp.Request, false)
-				config.Lg.Debug("Debug info:",
+				config.Lg.Debug("Debug info: \n",
 					zap.String("path", path),
 					zap.String(fmt.Sprintf("%s%s%s", dc, "method", rc), method),
 					zap.Int("status", status),
@@ -78,8 +78,12 @@ func GinLogger() gin.HandlerFunc {
 					zap.ByteString("requestBody", requestBody),
 					zap.Any("responseHeaders", responseHeaders),
 					zap.ByteString("responseBody", responseBody),
+					zap.String("stack", string(debug.Stack())),
 				)
 			} else {
+				// fuck you golang, why can not override function
+				// looking at these fucking poor function
+				// who never will stand
 				if status >= 200 && status < 400 {
 					config.Lg.Info(path,
 						zap.String("method", cCp.Request.Method),

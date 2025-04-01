@@ -24,7 +24,7 @@ func Routers(router *gin.Engine) {
 
 	av := router.Group("/av")
 	{
-		//Github Oauth
+		//GitHub Oauth
 		av.GET("/login", az.GitLogin)
 		av.GET("/callback", az.GitCallBack)
 

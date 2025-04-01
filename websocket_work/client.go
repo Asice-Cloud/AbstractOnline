@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
 )
@@ -22,6 +23,8 @@ type Client struct {
 	conn *websocket.Conn
 	send chan []byte
 	Name string
+
+	rdb *redis.Client
 }
 
 var upgrader = websocket.Upgrader{
@@ -58,12 +61,6 @@ func (cli *Client) read() {
 		message = bytes.TrimSpace(bytes.Replace(message, []byte{'\n'}, []byte{' '}, -1))
 		prefix := fmt.Sprintf("%s say %s", cli.Name, message)
 		cli.room.broadcast <- []byte(prefix)
-
-		// Cache the message in Redis
-		//err = rdb.LPush(context.Background(), "chat_messages", prefix).Err()
-		//if err != nil {
-		//	config.Lg.Error(fmt.Sprintf("Failed to cache message: %v", err))
-		//}
 	}
 }
 
@@ -126,14 +123,6 @@ func ServerWs(hub *Room, ctx *gin.Context) {
 		client.room.broadcast <- []byte(welcome)
 		client.room.broadcast <- []byte(number)
 	}()
-
-	// Send cached messages to the new client
-	//messages, err := rdb.LRange(ctx, "chat_messages", 0, -1).Result()
-	//if err == nil {
-	//	for _, msg := range messages {
-	//		client.send <- []byte(msg)
-	//	}
-	//}
 
 	go client.read()
 	go client.write()
