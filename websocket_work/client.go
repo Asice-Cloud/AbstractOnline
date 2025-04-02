@@ -23,8 +23,6 @@ type Client struct {
 	conn *websocket.Conn
 	send chan []byte
 	Name string
-
-	rdb *redis.Client
 }
 
 var upgrader = websocket.Upgrader{
