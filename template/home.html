@@ -37,6 +37,7 @@ window.onload = function () {
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
+            console.log(messages)
             for (var i = 0; i < messages.length; i++) {
                 var item = document.createElement("div");
                 item.innerText = messages[i];

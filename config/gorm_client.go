@@ -3,7 +3,7 @@ package config
 import (
 	"Abstract/model"
 	"fmt"
-	"github.com/spf13/viper"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,7 +26,8 @@ func initMySQL() {
 
 	// connect to database
 	var err error
-	DB, err = gorm.Open(mysql.Open(viper.GetString("mysql.dsn")), &gorm.Config{Logger: newLogger})
+	dsn := "root:123456@tcp(127.0.0.1:3306)/usertest?charset=utf8mb4&parseTime=True&loc=Local"
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		panic("failed to connect database")
 	}
