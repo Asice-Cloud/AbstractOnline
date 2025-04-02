@@ -3,11 +3,8 @@ package auth
 import (
 	"Abstract/utils"
 	"github.com/gin-gonic/gin"
-	jsoniter "github.com/json-iterator/go"
 	"testing"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type usertest struct {
 	username string

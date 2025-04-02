@@ -1,7 +1,7 @@
 package authorization
 
 import (
-	jsoniter "github.com/json-iterator/go"
+	"github.com/bytedance/sonic"
 	"io"
 	"log"
 	"net/http"
@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	json        = jsoniter.ConfigCompatibleWithStandardLibrary
 	state       = "Gauss curvature"
 	OauthConfig *oauth2.Config
 )
@@ -136,7 +135,7 @@ func GitCallBack(context *gin.Context) {
 	// The body contains the access token
 	context.JSON(http.StatusOK, gin.H{"access_token": string(body)})
 	var tokenResp tokenResponse
-	Parser := json.Unmarshal(body, &tokenResp)
+	Parser := sonic.Unmarshal(body, &tokenResp)
 	if Parser != nil {
 		log.Printf("Failed to parse token response: %v", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse token response"})
@@ -189,7 +188,7 @@ func GetUserDetails(context *gin.Context, token string) {
 
 	// Unmarshal the JSON response
 	var userResp UserResponse
-	err = json.Unmarshal(body, &userResp)
+	err = sonic.Unmarshal(body, &userResp)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse user response"})
 		return

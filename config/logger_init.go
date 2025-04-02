@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -12,8 +12,6 @@ import (
 	"os"
 	"path/filepath"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var Lg *zap.Logger
 var Colors = map[string]string{
@@ -45,7 +43,7 @@ func loadConfig(filename string) (*Config, error) {
 	}
 
 	var config Config
-	err = json.Unmarshal(configFile, &config)
+	err = sonic.Unmarshal(configFile, &config)
 	if err != nil {
 		return nil, err
 	}

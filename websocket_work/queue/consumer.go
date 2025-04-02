@@ -3,6 +3,7 @@ package queue
 import (
 	"context"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"strconv"
@@ -53,7 +54,7 @@ func (c *consumer) listen(redisClient *redis.Client, topic string) {
 						continue
 					}
 					var msg Message
-					err := json.Unmarshal([]byte(v.(string)), &msg)
+					err := sonic.Unmarshal([]byte(v.(string)), &msg)
 					if err != nil {
 						log.Println("Failed to unmarshal message:", err)
 						continue

@@ -3,6 +3,7 @@ package queue
 import (
 	"context"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"log"
 	"strconv"
 	"testing"
@@ -83,7 +84,7 @@ func Test(t *testing.T) {
 			continue
 		}
 		var message Message
-		err := json.Unmarshal([]byte(msg.(string)), &message)
+		err := sonic.Unmarshal([]byte(msg.(string)), &message)
 		if err != nil {
 			t.Fatalf("failed to unmarshal message: %v", err)
 		}
@@ -91,7 +92,7 @@ func Test(t *testing.T) {
 	}
 
 	// Format the result as JSON
-	jsonResult, err := json.MarshalIndent(readableMessages, "", "  ")
+	jsonResult, err := sonic.MarshalIndent(readableMessages, "", "  ")
 	if err != nil {
 		t.Fatalf("failed to marshal messages: %v", err)
 	}

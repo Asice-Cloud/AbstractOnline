@@ -1,12 +1,10 @@
 package queue
 
 import (
+	"github.com/bytedance/sonic"
 	"github.com/google/uuid"
-	jsoniter "github.com/json-iterator/go"
 	"time"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type Message struct {
 	ID          string      `json:"id""`
@@ -38,9 +36,9 @@ func (m *Message) GetID() string {
 }
 
 func (m *Message) MarshalBinary() ([]byte, error) {
-	return json.Marshal(m)
+	return sonic.Marshal(m)
 }
 
 func (m *Message) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, m)
+	return sonic.Unmarshal(data, m)
 }
