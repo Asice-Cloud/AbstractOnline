@@ -1,92 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Chat Example</title>
-<script type="text/javascript">
-window.onload = function () {
-    var conn;
-    var msg = document.getElementById("msg");
-    var log = document.getElementById("log");
+    <title>Chat Example</title>
+    <script type="text/javascript">
 
-    function appendLog(item) {
-        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
-        log.appendChild(item);
-        if (doScroll) {
-            log.scrollTop = log.scrollHeight - log.clientHeight;
+        var user_queue = [];
+        function close_box() {
+            var user_box = document.querySelector(".user-box");
+            if (user_box) {
+                user_box.remove();
+                console.log("User box removed");
+            } else {
+                console.log("User box not found");
+            }
+            user_queue = [];
+            var user_info = document.getElementById("user-info");
+            if (user_info) {
+                user_info.textContent = "";
+                console.log("User info cleared");
+            } else {
+                console.log("User info not found");
+            }
         }
-    }
 
-    document.getElementById("form").onsubmit = function () {
-        if (!conn) {
-            return false;
-        }
-        if (!msg.value) {
-            return false;
-        }
-        conn.send(msg.value);
-        msg.value = "";
-        return false;
-    };
+        window.onload = function () {
+            var conn;
+            var msg = document.getElementById("msg");
+            var log = document.getElementById("log");
 
-    if (window["WebSocket"]) {
-        conn = new WebSocket("ws://127.0.0.1:9999/user/ws");
-        conn.onclose = function (evt) {
-            var item = document.createElement("div");
-            item.innerHTML = "<b>Connection closed.</b>";
-            appendLog(item);
-        };
-        conn.onmessage = function (evt) {
-            var messages = evt.data.split('\n');
-            for (var i = 0; i < messages.length; i++) {
+
+
+            function create_box() {
+                var user_box = document.querySelector(".user-box");
+                if (!user_box) {
+                    user_box = document.createElement("div");
+                    user_box.className = "user-box";
+                    user_box.innerHTML = `
+                    <div class="close-btn" onclick="close_box()">&times;</div>
+                    <h4>User List</h4>
+                    <pre id="user-info"></pre>
+                    `;
+                    document.body.appendChild(user_box);
+                }
+                var user_info = document.getElementById("user-info");
+                user_info.textContent = user_queue.join('\n');
+            }
+
+
+
+            function appendLog(item) {
+                var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+                log.appendChild(item);
+                if (doScroll) {
+                    log.scrollTop = log.scrollHeight - log.clientHeight;
+                }
+            }
+
+            document.getElementById("form").onsubmit = function () {
+                if (!conn) {
+                    return false;
+                }
+                if (!msg.value) {
+                    return false;
+                }
+                conn.send(msg.value);
+                msg.value = "";
+                return false;
+            };
+
+            if (window["WebSocket"]) {
+                conn = new WebSocket("ws://127.0.0.1:9999/user/ws");
+                conn.onclose = function (evt) {
+                    var item = document.createElement("div");
+                    item.innerHTML = "<b>Connection closed.</b>";
+                    appendLog(item);
+                };
+                conn.onmessage = function (evt) {
+                    var messages = evt.data.split('\n');
+                    console.log(messages)
+                    for (var i = 0; i < messages.length; i++) {
+                        var item = document.createElement("div");
+                        item.innerText = messages[i];
+                        if(messages[i].includes("user:")){
+                            user_queue.push(messages[i]);
+                            create_box();
+                        } else {
+                            appendLog(item);
+                        }
+                    }
+                };
+            } else {
                 var item = document.createElement("div");
-                item.innerText = messages[i];
+                item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
                 appendLog(item);
             }
         };
-    } else {
-        var item = document.createElement("div");
-        item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
-        appendLog(item);
-    }
-};
-</script>
-<style type="text/css">
-html {
-    overflow: hidden;
-}
+    </script>
+    <style type="text/css">
+        html {
+            overflow: hidden;
+        }
 
-body {
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    background: gray;
-}
+        body {
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background: gray;
+            font-family: Arial, sans-serif;
+        }
 
-#log {
-    background: white;
-    margin: 0;
-    padding: 0.5em 0.5em 0.5em 0.5em;
-    position: absolute;
-    top: 0.5em;
-    left: 0.5em;
-    right: 0.5em;
-    bottom: 3em;
-    overflow: auto;
-}
+        #log {
+            background: white;
+            margin: 0;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            position: absolute;
+            top: 0.5em;
+            left: 0.5em;
+            right: 0.5em;
+            bottom: 3em;
+            overflow: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-#form {
-    padding: 0 0.5em 0 0.5em;
-    margin: 0;
-    position: absolute;
-    bottom: 1em;
-    left: 0px;
-    width: 100%;
-    overflow: hidden;
-}
+        #form {
+            padding: 0 0.5em 0 0.5em;
+            margin: 0;
+            position: absolute;
+            bottom: 1em;
+            left: 0px;
+            width: 100%;
+            overflow: hidden;
+        }
 
-</style>
+        .user-box {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 1em;
+            margin: 1em;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            height: 300px;
+            overflow: auto;
+            word-wrap: break-word;
+            z-index: 1000;
+        }
+
+        .user-box h4 {
+            margin: 0 0 0.5em 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .user-box pre {
+            background: #f9f9f9;
+            padding: 1em;
+            border-radius: 5px;
+            overflow: auto;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+    </style>
 </head>
 <body>
 <div id="log"></div>

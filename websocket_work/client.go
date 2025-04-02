@@ -4,10 +4,12 @@ import (
 	"Abstract/config"
 	"bytes"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -22,6 +24,8 @@ type Client struct {
 	conn *websocket.Conn
 	send chan []byte
 	Name string
+
+	rdb *redis.Client
 }
 
 var upgrader = websocket.Upgrader{
@@ -54,8 +58,24 @@ func (cli *Client) read() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, []byte{'\n'}, []byte{' '}, -1))
-		prefix := fmt.Sprintf("%s say %s", cli.Name, message)
-		cli.room.broadcast <- []byte(prefix)
+		if string(message) == "#show" {
+			msg := "users are listed:\n"
+			count := 0
+			for key, value := range cli.room.clients {
+				if value {
+					if key.Name == cli.Name {
+						msg += fmt.Sprintf("user:%s (you)\n", key.Name)
+					} else {
+						msg += fmt.Sprintf("user:%s\n", key.Name)
+					}
+					count += 1
+				}
+			}
+			msg += fmt.Sprintf("#show: current number of people in the chat room is %d", count)
+			cli.send <- []byte(msg)
+		} else {
+			cli.room.broadcast <- []byte(fmt.Sprintf("%s say: %s", cli.Name, message))
+		}
 	}
 }
 

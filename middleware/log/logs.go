@@ -78,7 +78,6 @@ func GinLogger() gin.HandlerFunc {
 					zap.ByteString("requestBody", requestBody),
 					zap.Any("responseHeaders", responseHeaders),
 					zap.ByteString("responseBody", responseBody),
-					zap.String("stack", string(debug.Stack())),
 				)
 			} else {
 				// fuck you golang, why can not override function
