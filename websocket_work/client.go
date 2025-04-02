@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
 )
@@ -32,8 +31,6 @@ var upgrader = websocket.Upgrader{
 		return true
 	},
 }
-
-var rdb = config.Rdb
 
 func (cli *Client) read() {
 	defer func() {
