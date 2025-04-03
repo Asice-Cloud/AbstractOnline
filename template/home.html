@@ -28,8 +28,6 @@
             var msg = document.getElementById("msg");
             var log = document.getElementById("log");
 
-
-
             function create_box() {
                 var user_box = document.querySelector(".user-box");
                 if (!user_box) {
@@ -45,8 +43,6 @@
                 var user_info = document.getElementById("user-info");
                 user_info.textContent = user_queue.join('\n');
             }
-
-
 
             function appendLog(item) {
                 var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
@@ -81,8 +77,17 @@
                     for (var i = 0; i < messages.length; i++) {
                         var item = document.createElement("div");
                         item.innerText = messages[i];
-                        if(messages[i].includes("user:")){
-                            user_queue.push(messages[i]);
+                        if(messages[i].includes("#show:")) {
+                            // Clear the user queue before adding new users
+                            user_queue = [];
+                            // Extract user list from the message
+                            var userList = messages[i].substring(messages[i].indexOf(":") + 1).split(',');
+                            for (var j = 0; j < userList.length; j++) {
+                                var user = userList[j].trim();
+                                if (user) {
+                                    user_queue.push("user: " + user);
+                                }
+                            }
                             create_box();
                         } else {
                             appendLog(item);

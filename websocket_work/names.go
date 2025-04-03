@@ -1,7 +1,9 @@
 package websocket_work
 
 import (
+	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"math/rand"
 	"time"
 )
@@ -26,7 +28,13 @@ var names = []string{
 	"隐藏角色伊藤诚",
 }
 
-var nameCount = make(map[string]int)
+//var nameCount = make(map[string]int)
+
+var rdb = redis.NewClient(&redis.Options{
+	Addr:     "localhost:6379", // Redis address
+	Password: "",               // No password
+	DB:       0,                // Default DB
+})
 
 func getRandomName() string {
 	rand.Seed(time.Now().UnixNano())
@@ -34,10 +42,15 @@ func getRandomName() string {
 }
 
 func getUniqueName(baseName string) string {
-	if count, exists := nameCount[baseName]; exists {
-		nameCount[baseName]++
-		return fmt.Sprintf("%s Code.%02d", baseName, count+1)
+	ctx := context.Background()
+	key := fmt.Sprintf("name:%s", baseName)
+	val, err := rdb.Incr(ctx, key).Result()
+	if err != nil {
+		fmt.Printf("Failed to increment name count in Redis: %v\n", err)
+		return baseName // Fallback to baseName if Redis fails
 	}
-	nameCount[baseName] = 1
-	return baseName
+	if val == 1 {
+		return baseName
+	}
+	return fmt.Sprintf("%s Code.%02d", baseName, val)
 }
