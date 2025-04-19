@@ -56,21 +56,27 @@ func (cli *Client) read() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, []byte{'\n'}, []byte{' '}, -1))
-		if string(message) == "#show" {
-			var userList []string
-			for key, value := range cli.room.clients {
-				if value {
-					if key.Name == cli.Name {
-						userList = append(userList, key.Name+"(you)")
-					} else {
-						userList = append(userList, key.Name)
+		if strings.HasPrefix(string(message), "@ai") {
+			query := strings.TrimSpace(strings.TrimPrefix(string(message), "@ai"))
+			ai_response := get_ai_response(query)
+			cli.send <- []byte(fmt.Sprintf("Flandre Scarlet : %s", ai_response))
+		} else {
+			if string(message) == "#show" {
+				var userList []string
+				for key, value := range cli.room.clients {
+					if value {
+						if key.Name == cli.Name {
+							userList = append(userList, key.Name+"(you)")
+						} else {
+							userList = append(userList, key.Name)
+						}
 					}
 				}
+				msg := fmt.Sprintf("#show:%s", strings.Join(userList, ","))
+				cli.send <- []byte(msg)
+			} else {
+				cli.room.broadcast <- []byte(fmt.Sprintf("%s say: %s", cli.Name, message))
 			}
-			msg := fmt.Sprintf("#show:%s", strings.Join(userList, ","))
-			cli.send <- []byte(msg)
-		} else {
-			cli.room.broadcast <- []byte(fmt.Sprintf("%s say: %s", cli.Name, message))
 		}
 	}
 }

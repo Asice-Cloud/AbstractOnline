@@ -1,4 +1,0 @@
-app:
-  mode: debug
-mysql:
-  dsn: root:root@tcp(localhost:3306)/usertest?charset=utf8mb4&parseTime=True&loc=Local
