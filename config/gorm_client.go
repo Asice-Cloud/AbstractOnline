@@ -3,12 +3,13 @@ package config
 import (
 	"Abstract/model"
 	"fmt"
+	"os/exec"
+
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"os/exec"
 
 	"log"
 	"os"
@@ -31,7 +32,8 @@ func initMySQL() {
 	for {
 		DB, err = gorm.Open(mysql.Open(viper.GetString("mysql.dsn")), &gorm.Config{Logger: newLogger})
 		if err != nil {
-			cmd := exec.Command("mysql", "-u", "root", "-proot", "-e", "CREATE DATABASE IF NOT EXISTS usertest;")
+			// Use mariadb instead of mysql and proper authentication
+			cmd := exec.Command("mariadb", "-u", viper.GetString("mysql.user"), "-p"+viper.GetString("mysql.password"), "-e", "CREATE DATABASE IF NOT EXISTS "+viper.GetString("mysql.database")+";")
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
 			if err := cmd.Run(); err != nil {

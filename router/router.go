@@ -6,12 +6,19 @@ import (
 	az "Abstract/controller/authorization"
 	um "Abstract/controller/user_module"
 	vc "Abstract/controller/verification"
+	"Abstract/middleware/debug"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Routers(router *gin.Engine) {
+	// Apply debug defense middleware globally to all routes
+	router.Use(debug.DebugDefenseMiddleware())
+
 	router.GET("/index", controller.Welcome)
+
+	// Debug detection API endpoint
+	router.POST("/api/debug-detected", debug.DebugDetectionHandler())
 
 	userRouter := router.Group("/user")
 	//userRouter.Use(blockIP.BlockIPMiddleware)
