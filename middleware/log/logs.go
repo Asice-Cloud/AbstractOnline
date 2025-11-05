@@ -39,10 +39,52 @@ func (w responseBodyWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
+func by_type(a []*gin.Error, typ gin.ErrorType) []*gin.Error {
+	if len(a) == 0 {
+		return nil
+	}
+	if typ == gin.ErrorTypeAny {
+		return a
+	}
+	var result []*gin.Error
+	for _, msg := range a {
+		if msg.IsType(typ) {
+			result = append(result, msg)
+		}
+	}
+	return result
+
+}
+
+func ct_string(a []*gin.Error) string {
+	if len(a) == 0 {
+		return ""
+	}
+	var buffer strings.Builder
+	for i, msg := range a {
+		fmt.Fprintf(&buffer, "Error #%02d: %s\n", i+1, msg.Err)
+		if msg.Meta != nil {
+			fmt.Fprintf(&buffer, "     Meta: %v\n", msg.Meta)
+		}
+	}
+	return buffer.String()
+}
+
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Make a copy of the context for the goroutine
-		cCp := *c
+		//cCp := *c
+		cCp := struct {
+			Writer   gin.ResponseWriter
+			Request  *http.Request
+			ClientIP func() string
+			Errors   []*gin.Error
+		}{
+			c.Writer,
+			c.Request,
+			c.ClientIP,
+			c.Errors,
+		}
 		start := time.Now()
 		w := &responseBodyWriter{body: &bytes.Buffer{}, ResponseWriter: c.Writer}
 		cCp.Writer = w
@@ -90,7 +132,7 @@ func GinLogger() gin.HandlerFunc {
 						zap.String("query", query),
 						zap.String("ip", clientIP),
 						zap.String("user-agent", userAgent),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.String("errors", ct_string(by_type(cCp.Errors, gin.ErrorTypePrivate))),
 						zap.Duration("cost", cost),
 					)
 				} else if status >= 400 && status < 500 {
@@ -99,7 +141,7 @@ func GinLogger() gin.HandlerFunc {
 						zap.String("query", query),
 						zap.String("ip", cCp.ClientIP()),
 						zap.String("user-agent", cCp.Request.UserAgent()),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.String("errors", ct_string(by_type(cCp.Errors, gin.ErrorTypePrivate))),
 						zap.Duration("cost", cost),
 					)
 				} else {
@@ -108,7 +150,7 @@ func GinLogger() gin.HandlerFunc {
 						zap.String("query", query),
 						zap.String("ip", cCp.ClientIP()),
 						zap.String("user-agent", cCp.Request.UserAgent()),
-						zap.String("errors", cCp.Errors.ByType(gin.ErrorTypePrivate).String()),
+						zap.String("errors", ct_string(by_type(cCp.Errors, gin.ErrorTypePrivate))),
 						zap.Duration("cost", cost),
 					)
 				}

@@ -8,12 +8,13 @@ import (
 	"Abstract/utils"
 	"context"
 	"fmt"
-	"github.com/gin-contrib/cors"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 )

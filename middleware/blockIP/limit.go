@@ -2,8 +2,6 @@ package blockIP
 
 import (
 	"Abstract/config"
-	"Abstract/response"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/time/rate"
@@ -21,7 +19,6 @@ func LimitCount(context *gin.Context) (err string) {
 			return ""
 		}
 		mu.Unlock()
-		response.RespError(context, response.CodeServerBusy)
 	}
 	return ""
 }
@@ -31,7 +28,6 @@ func BlockIPMiddleware(context *gin.Context) {
 	ip := context.ClientIP()
 	checkResponse := LimitCount(context)
 	if checkResponse != "" {
-		response.RespErrorWithMsg(context, response.CodeInvalidAuthFormat, checkResponse)
 		context.Abort()
 		return
 	}
@@ -43,12 +39,10 @@ func BlockIPMiddleware(context *gin.Context) {
 		return
 	} else if err != nil {
 		// An actual error occurred, return a 503 error
-		response.RespError(context, response.CodeServerBusy)
 		context.Abort()
 		return
 	}
 	if val == "blocked" {
-		response.RespErrorWithMsg(context, response.CodeInvalidAuthFormat, errors.New("ip banned"))
 		context.Abort()
 		return
 	}

@@ -39,6 +39,7 @@ func initMySQL() {
 			if err := cmd.Run(); err != nil {
 				Lg.Error("failed to create db", zap.Error(err))
 			}
+			return
 		} else {
 			break
 		}

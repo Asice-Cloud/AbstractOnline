@@ -3,6 +3,7 @@ package debug
 import (
 	"Abstract/server"
 	"bytes"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,10 @@ type responseWriter struct {
 }
 
 func (w *responseWriter) Write(b []byte) (int, error) {
-	w.body.Write(b)
+	// Capture written bytes into buffer for inspection/modification later.
+	_, _ = w.body.Write(b)
+	// Do not write through here; middleware will write the final bytes once it
+	// decides whether to inject the script or pass the response unchanged.
 	return len(b), nil
 }
 
@@ -40,9 +44,10 @@ func DebugDefenseMiddleware() gin.HandlerFunc {
 
 		c.Next()
 
-		// Check if the response is HTML
-		contentType := c.Writer.Header().Get("Content-Type")
-		if strings.Contains(contentType, "text/html") || contentType == "" {
+		// Check if the response is HTML (only when Content-Type explicitly indicates HTML)
+		// Note: handlers set headers on the wrapper (blw), so read from blw.Header()
+		contentType := blw.Header().Get("Content-Type")
+		if strings.Contains(contentType, "text/html") {
 			// Get the response body
 			responseBody := blw.body.String()
 
@@ -62,12 +67,26 @@ func DebugDefenseMiddleware() gin.HandlerFunc {
 				}
 			}
 
-			// Write the modified response
-			c.Writer.Header().Set("Content-Length", string(rune(len(responseBody))))
-			_, _ = c.Writer.WriteString(responseBody)
+			// Copy headers from the wrapper to the underlying writer so Content-Type and
+			// other headers set by handlers are preserved.
+			for k, vals := range blw.Header() {
+				for _, v := range vals {
+					blw.ResponseWriter.Header().Add(k, v)
+				}
+			}
+			// Overwrite Content-Length with the modified body length
+			blw.ResponseWriter.Header().Set("Content-Length", strconv.Itoa(len(responseBody)))
+			_, _ = blw.ResponseWriter.Write([]byte(responseBody))
 		} else {
-			// For non-HTML responses, write the original body
-			_, _ = c.Writer.Write(blw.body.Bytes())
+			// For non-HTML responses, forward headers and the original buffered bytes
+			// to the underlying ResponseWriter so headers (Content-Type, etc.) set
+			// by the handler are preserved.
+			for k, vals := range blw.Header() {
+				for _, v := range vals {
+					blw.ResponseWriter.Header().Add(k, v)
+				}
+			}
+			_, _ = blw.ResponseWriter.Write(blw.body.Bytes())
 		}
 	}
 }
